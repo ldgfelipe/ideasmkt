@@ -1,0 +1,60 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post }
+  }));
+}
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const dateFormatter = new Intl.DateTimeFormat('es-ES', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+---
+
+<Layout title={`${post.data.title} - IdeasMKT`} description={post.data.description}>
+  <article class="py-20">
+    <div class="container mx-auto px-4 lg:px-8 max-w-3xl">
+      <a href="/blog" class="text-purple-600 hover:underline text-sm mb-8 inline-block">
+        ← Volver al blog
+      </a>
+
+      <div class="aspect-video bg-gradient-to-br from-purple-400 to-blue-500 rounded-xl mb-8 flex items-center justify-center">
+        <span class="text-6xl">📝</span>
+      </div>
+
+      <div class="flex flex-wrap gap-2 mb-4">
+        {post.data.tags.map((tag) => (
+          <span class="text-xs font-medium px-3 py-1 bg-purple-50 text-purple-700 rounded-full">
+            {tag}
+          </span>
+        ))}
+      </div>
+
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">{post.data.title}</h1>
+
+      <div class="flex items-center gap-4 text-sm text-gray-500 mb-8">
+        <span>{post.data.author}</span>
+        <span>•</span>
+        <span>{dateFormatter.format(post.data.pubDate)}</span>
+        <span>•</span>
+        <span>{post.data.readingTime} de lectura</span>
+      </div>
+
+      <div class="prose prose-lg max-w-none">
+        <Content />
+      </div>
+    </div>
+  </article>
+</Layout>

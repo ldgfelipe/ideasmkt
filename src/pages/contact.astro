@@ -1,0 +1,64 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ContactForm from '../components/ContactForm';
+import { COMPANY_INFO } from '../lib/constants';
+
+const contactInfo = [
+  {
+    icon: '📧',
+    label: 'Email',
+    value: COMPANY_INFO.email,
+    href: `mailto:${COMPANY_INFO.email}`
+  },
+  {
+    icon: '📞',
+    label: 'Teléfono',
+    value: COMPANY_INFO.phone,
+    href: `tel:${COMPANY_INFO.phone.replace(/\s/g, '')}`
+  }
+];
+---
+
+<Layout title="Contacto - IdeasMKT">
+  <section class="py-20">
+    <div class="container mx-auto px-4 lg:px-8">
+      <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          Hablemos sobre tu proyecto
+        </h1>
+        <p class="text-gray-600 max-w-2xl mx-auto">
+          ¿Tienes un proyecto en mente? Contáctanos y descubre cómo podemos ayudarte a alcanzar tus objetivos.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
+        <div class="space-y-6">
+          {contactInfo.map((info) => (
+            <div key={info.label} class="flex items-start gap-4">
+              <div class="text-2xl">{info.icon}</div>
+              <div>
+                <p class="font-semibold text-gray-900">{info.label}</p>
+                <a
+                  href={info.href}
+                  class="text-gray-600 hover:text-purple-600 transition-colors"
+                >
+                  {info.value}
+                </a>
+              </div>
+            </div>
+          ))}
+
+          <div class="card mt-8">
+            <h3 class="font-bold text-gray-900 mb-4">Horario de atención</h3>
+            <p class="text-gray-600">Lunes - Viernes: 9:00 - 18:00</p>
+            <p class="text-gray-600">Sábado: 10:00 - 14:00</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <ContactForm client:load />
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

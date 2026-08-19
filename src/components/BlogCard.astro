@@ -1,0 +1,37 @@
+---
+import type { BlogPost } from '../lib/blog';
+
+interface Props {
+  post: BlogPost;
+}
+
+const { post } = Astro.props;
+const dateFormatter = new Intl.DateTimeFormat('es-ES', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+---
+
+<article class="card flex flex-col h-full group cursor-pointer">
+  <a href={`/blog/${post.slug}`} class="flex flex-col h-full">
+    <div class="aspect-video bg-gradient-to-br from-purple-400 to-blue-500 rounded-lg mb-4 flex items-center justify-center">
+      <span class="text-4xl">📝</span>
+    </div>
+    <div class="flex flex-wrap gap-2 mb-3">
+      {post.tags.map((tag) => (
+        <span class="text-xs font-medium px-2 py-1 bg-purple-50 text-purple-700 rounded-full">
+          {tag}
+        </span>
+      ))}
+    </div>
+    <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">
+      {post.title}
+    </h3>
+    <p class="text-gray-600 text-sm flex-1">{post.description}</p>
+    <div class="flex items-center justify-between mt-4 text-xs text-gray-500">
+      <span>{post.author}</span>
+      <span>{dateFormatter.format(post.pubDate)}</span>
+    </div>
+  </a>
+</article>

@@ -1,0 +1,89 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SERVICES, COMPANY_INFO } from '../lib/constants';
+import ContactForm from '../components/ContactForm';
+
+const stats = [
+  { value: '500+', label: 'Clientes satisfechos' },
+  { value: '10x', label: 'ROI promedio' },
+  { value: '50+', label: 'Proyectos activos' }
+];
+---
+
+<Layout title="IdeasMKT - Agencia de Marketing Digital">
+  <section class="bg-gradient-to-br from-purple-50 via-white to-blue-50 pt-28 pb-20">
+    <div class="container mx-auto px-4 lg:px-8">
+      <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
+          Transforma tu <span class="gradient-text">negocio</span> con marketing digital
+        </h1>
+        <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          Estrategias basadas en datos y tecnología para escalar tu empresa al siguiente nivel.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="#contact" class="btn-primary text-lg">
+            Empezar hoy
+          </a>
+          <a href="/services" class="btn-outline text-lg">
+            Ver servicios
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+        {stats.map((stat) => (
+          <div key={stat.label}>
+            <div class="text-4xl font-bold gradient-text mb-2">{stat.value}</div>
+            <p class="text-gray-600">{stat.label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">Nuestros servicios</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">
+          Ofrecemos soluciones integrales de marketing digital para impulsar tu crecimiento.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {SERVICES.map((service) => (
+          <div key={service.id} class="card text-center">
+            <div class="text-4xl mb-4">{service.icon}</div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">{service.title}</h3>
+            <p class="text-gray-600 text-sm mb-4">{service.description}</p>
+            <ul class="space-y-2 text-xs text-gray-500">
+              {service.features.map((feature) => (
+                <li key={feature}>✓ {feature}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-4 lg:px-8">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">
+          ¿Listo para escalar tu negocio?
+        </h2>
+        <p class="text-gray-600 mb-8">
+          Agenda una consulta gratuita y descubre cómo podemos impulsar tu crecimiento.
+        </p>
+      </div>
+      <div class="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-100">
+        <ContactForm client:load />
+      </div>
+    </div>
+  </section>
+</Layout>

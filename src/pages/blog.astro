@@ -1,0 +1,32 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getBlogPosts } from '../lib/blog';
+import BlogCard from '../components/BlogCard.astro';
+
+const posts = await getBlogPosts();
+---
+
+<Layout title="Blog - IdeasMKT" description="Artículos y consejos sobre marketing digital, SEO, publicidad pagada y más.">
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4 lg:px-8">
+      <div class="max-w-3xl mx-auto text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Nuestro Blog</h1>
+        <p class="text-gray-600">
+          Ideas, consejos y estrategias para dominar el marketing digital.
+        </p>
+      </div>
+
+      {posts.length === 0 ? (
+        <div class="text-center py-16">
+          <p class="text-gray-500">Pronto publicaremos nuevos artículos.</p>
+        </div>
+      ) : (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          {posts.map((post) => (
+            <BlogCard key={post.slug} post={post} />
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+</Layout>
