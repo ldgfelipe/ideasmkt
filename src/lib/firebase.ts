@@ -10,6 +10,7 @@ import {
   type Auth
 } from 'firebase/auth';
 import { getFirestore, type Firestore } from 'firebase/firestore';
+import { getStorage, type FirebaseStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDohZW50fMnkcvMWCyPhoeUjMGNY5CeNIc',
@@ -24,21 +25,25 @@ const firebaseConfig = {
 let app: FirebaseApp | undefined;
 let auth: Auth | undefined;
 let db: Firestore | undefined;
+let storage: FirebaseStorage | undefined;
 
 function initFirebase() {
   if (!getApps().length) {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
     db = getFirestore(app);
+    storage = getStorage(app);
   } else {
     app = getApps()[0];
     auth = getAuth(app);
     db = getFirestore(app);
+    storage = getStorage(app);
   }
-  return { app, auth, db };
+  return { app, auth, db, storage };
 }
 
-const { auth: firebaseAuth, db: firestore, app: firebaseApp } = (() => initFirebase())();
+const { auth: firebaseAuth, db: firestore, app: firebaseApp, storage: firebaseStorage } =
+  (() => initFirebase())();
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -46,6 +51,7 @@ export {
   firebaseApp,
   firebaseAuth as auth,
   firestore as db,
+  firebaseStorage as storage,
   googleProvider,
   signInWithPopup,
   signInWithEmailAndPassword,
