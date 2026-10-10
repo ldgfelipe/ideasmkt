@@ -30,7 +30,13 @@ jobs:
         run: npm run build
 
       - name: Deploy to Firebase Hosting
-        run: npx firebase-tools deploy --only hosting,firestore --project ideasmkt-53500
+        run: |
+          if [ -z "$FIREBASE_TOKEN" ]; then
+            echo "::warning::FIREBASE_TOKEN no está configurado. Se omite el despliegue automático."
+            echo "Configúralo en Settings → Secrets and variables → Actions con el nombre FIREBASE_TOKEN."
+            exit 0
+          fi
+          npx firebase-tools deploy --only hosting,firestore --project ideasmkt-53500
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 

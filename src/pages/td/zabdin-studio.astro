@@ -1,10 +1,12 @@
 ---
 // Tarjeta digital Zabdín Studio — Ruta: /td/zabdin-studio
+// IMPORTANTE: importar global.css o Tailwind no aplica ningún estilo.
 import '../../styles/global.css';
+import PriceCatalog from '../../components/zabdin/PriceCatalog';
 
 const links = {
   quienesSomos: '#',
-  catalogo: '#',
+  catalogo: '#catalogo', // hace scroll a la sección de catálogo y precios
   agenda: '#',
   ubicacion: 'https://www.google.com/maps/search/?api=1&query=Zabd%C3%ADn+Studio',
   facebook: '#',
@@ -26,14 +28,24 @@ const socials = [
 ];
 ---
 
-<html lang="es">
+<html lang="es" class="scroll-smooth">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta
+      name="description"
+      content="Zabdín Studio — Catálogo y lista de precios 2026. Busca y filtra servicios de cabello, uñas, manos y pies, facial y corporal, y promociones por día."
+    />
     <title>Zabdín Studio · Tarjeta Digital</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
   </head>
-  <body class="m-0 antialiased">
+  <body class="m-0 font-inter antialiased">
     <main
       class="flex min-h-dvh w-full flex-col bg-cover bg-center bg-no-repeat"
       style="background-image: url('/zabdin/fondo-tarjeta.webp');"
@@ -88,5 +100,47 @@ const socials = [
         }
       </footer>
     </main>
+
+    <!-- Catálogo interactivo de precios 2026 -->
+    <section
+      id="catalogo"
+      class="w-full scroll-mt-4 bg-gradient-to-b from-rose-50 via-amber-50 to-orange-50 px-4 py-14 md:py-20"
+    >
+      <div class="mx-auto max-w-6xl">
+        <header class="mb-8 text-center">
+          <p class="text-sm font-semibold uppercase tracking-widest text-rose-400">
+            Lista 2026
+          </p>
+          <h2 class="mt-1 text-3xl font-extrabold text-stone-900 md:text-4xl">
+            Catálogo &amp; Precios
+          </h2>
+          <p class="mx-auto mt-3 max-w-xl text-stone-500">
+            Busca el servicio que necesitas o filtra por categoría. Encuentra tu
+            tratamiento ideal en segundos.
+          </p>
+        </header>
+
+        <PriceCatalog client:load />
+      </div>
+
+      <div class="mt-14 flex justify-center gap-6">
+        {
+          socials.map((s) => (
+            <a
+              href={s.href}
+              target={s.href.startsWith('http') ? '_blank' : undefined}
+              rel={s.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+              aria-label={s.alt}
+              class="transition-transform duration-200 hover:scale-110"
+            >
+              <img src={s.img} alt={s.alt} class="h-8 w-8" loading="lazy" />
+            </a>
+          ))
+        }
+      </div>
+      <p class="mt-6 text-center text-xs text-stone-400">
+        Zabdín Studio · Precios vigentes 2026
+      </p>
+    </section>
   </body>
 </html>
