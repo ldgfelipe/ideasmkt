@@ -33,22 +33,22 @@ function ServiceCard({ service }: { service: Service }) {
   return (
     <article className="flex h-full flex-col rounded-2xl border border-rose-100 bg-white/95 p-4 shadow-sm transition-shadow duration-200 hover:shadow-md">
       <div className="flex items-start justify-between gap-2">
-        <h3 className="td-display text-base font-semibold leading-snug text-stone-800">
+        <h3 className="td-display text-lg font-semibold leading-snug text-stone-800">
           {service.name}
         </h3>
         {service.price && (
-          <span className="shrink-0 rounded-full bg-[#cf3080]/10 px-3 py-1 text-sm font-bold text-[#cf3080]">
+          <span className="shrink-0 rounded-full bg-[#cf3080]/10 px-3 py-1 text-base font-bold text-[#cf3080]">
             {service.price}
           </span>
         )}
       </div>
 
       {service.description && (
-        <p className="mt-1 text-sm text-stone-500">{service.description}</p>
+        <p className="mt-1 text-base text-stone-600">{service.description}</p>
       )}
 
       {service.note && (
-        <p className="mt-1 text-xs font-medium text-amber-600">{service.note}</p>
+        <p className="mt-1 text-sm font-medium text-amber-700">{service.note}</p>
       )}
 
       {service.options && service.options.length > 0 && (
@@ -56,9 +56,9 @@ function ServiceCard({ service }: { service: Service }) {
           {service.options.map((option) => (
             <li
               key={option.label}
-              className="flex items-center justify-between gap-2 rounded-lg bg-rose-50/80 px-3 py-1.5 text-sm"
+              className="flex items-center justify-between gap-2 rounded-lg bg-rose-50/80 px-3 py-2 text-base"
             >
-              <span className="text-stone-600">{option.label}</span>
+              <span className="text-stone-700">{option.label}</span>
               <span className="font-semibold text-[#cf3080]">{option.price}</span>
             </li>
           ))}
@@ -124,14 +124,14 @@ export default function PriceCatalog() {
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Buscar servicio: acrílicas, lifting, alisado, pedicura…"
           aria-label="Buscar servicio por nombre"
-          className="w-full rounded-full border border-rose-200 bg-white py-3 pl-12 pr-11 text-stone-700 shadow-sm outline-none transition focus:border-rose-400 focus:ring-2 focus:ring-rose-200"
+          className="w-full rounded-full border border-rose-200 bg-white py-3.5 pl-12 pr-11 text-base text-stone-700 shadow-sm outline-none transition focus:border-rose-400 focus:ring-2 focus:ring-rose-200"
         />
         {query && (
           <button
             type="button"
             onClick={() => setQuery('')}
             aria-label="Limpiar búsqueda"
-            className="absolute right-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-stone-400 transition hover:bg-rose-100 hover:text-rose-600"
+            className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-lg text-stone-400 transition hover:bg-rose-100 hover:text-rose-600"
           >
             ×
           </button>
@@ -144,7 +144,7 @@ export default function PriceCatalog() {
           type="button"
           onClick={() => setFilter('all')}
           aria-pressed={filter === 'all'}
-          className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition ${
+          className={`shrink-0 rounded-full border px-4 py-2.5 text-base font-medium transition ${
             filter === 'all'
               ? 'border-[#cf3080] bg-[#cf3080] text-white shadow-sm'
               : 'border-rose-200 bg-white text-stone-600 hover:bg-rose-50'
@@ -160,7 +160,7 @@ export default function PriceCatalog() {
               type="button"
               onClick={() => setFilter(category.id)}
               aria-pressed={active}
-              className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition ${
+              className={`shrink-0 rounded-full border px-4 py-2.5 text-base font-medium transition ${
                 active
                   ? 'border-[#cf3080] bg-[#cf3080] text-white shadow-sm'
                   : 'border-rose-200 bg-white text-stone-600 hover:bg-rose-50'
@@ -183,7 +183,7 @@ export default function PriceCatalog() {
       </div>
 
       {/* Resultados */}
-      <p className="mb-4 text-center text-sm text-stone-500" aria-live="polite">
+      <p className="mb-4 text-center text-base text-stone-600" aria-live="polite">
         {total === 0
           ? 'Sin resultados'
           : `${total} ${total === 1 ? 'servicio' : 'servicios'} ${
@@ -196,10 +196,10 @@ export default function PriceCatalog() {
           <p className="text-3xl" aria-hidden="true">
             🔍
           </p>
-          <p className="mt-2 font-medium text-stone-700">
+          <p className="mt-2 text-lg font-medium text-stone-700">
             No encontramos servicios para “{query}”.
           </p>
-          <p className="mt-1 text-sm text-stone-500">
+          <p className="mt-1 text-base text-stone-600">
             Prueba con otro término o revisa las categorías.
           </p>
           <button
@@ -208,7 +208,7 @@ export default function PriceCatalog() {
               setQuery('');
               setFilter('all');
             }}
-            className="mt-4 rounded-full bg-[#cf3080] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#b02870]"
+            className="mt-4 rounded-full bg-[#cf3080] px-6 py-3 text-base font-semibold text-white transition hover:bg-[#b02870]"
           >
             Ver todos los servicios
           </button>
@@ -217,7 +217,7 @@ export default function PriceCatalog() {
         <div className="space-y-8">
           {groups.map((group) => (
             <section key={group.category.id}>
-              <h3 className="td-display mb-3 flex items-center gap-2 text-lg font-bold text-stone-800">
+              <h3 className="td-display mb-3 flex items-center gap-2 text-xl font-bold text-stone-800">
                 <span aria-hidden="true">{group.category.emoji}</span>
                 {group.category.label}
                 <span className="ml-1 rounded-full bg-[#cf3080]/10 px-2 py-0.5 text-xs font-semibold text-[#cf3080]">
