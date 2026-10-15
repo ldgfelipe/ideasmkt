@@ -5,20 +5,19 @@ import '../../styles/global.css';
 import PriceCatalog from '../../components/zabdin/PriceCatalog';
 
 const links = {
-  quienesSomos: '#',
-  catalogo: '#catalogo', // hace scroll a la sección de catálogo y precios
-  agenda: '#',
+  agenda: '#', // TODO: enlace real (WhatsApp / agenda)
   ubicacion: 'https://www.google.com/maps/search/?api=1&query=Zabd%C3%ADn+Studio',
-  facebook: '#',
-  instagram: '#',
-  whatsapp: '#'
+  facebook: '#', // TODO: URL real
+  instagram: '#', // TODO: URL real
+  whatsapp: '#' // TODO: número real
 };
 
-const buttons = [
-  { img: '/zabdin/btn_quienes_somos.webp', alt: 'Quiénes Somos', href: links.quienesSomos },
-  { img: '/zabdin/btn_catalogo.webp', alt: 'Catálogo', href: links.catalogo },
-  { img: '/zabdin/btn_agenda_tu_cita.webp', alt: 'Agenda tu cita', href: links.agenda },
-  { img: '/zabdin/btn_ubicacion.webp', alt: 'Ubicación', href: links.ubicacion }
+// Botones del menú inicial. `view` abre una vista; `href` navega.
+const menuItems = [
+  { label: 'Quiénes Somos', view: 'quienes' },
+  { label: 'Catálogo', view: 'catalogo' },
+  { label: 'Agenda tu cita', href: links.agenda },
+  { label: 'Ubicación', href: links.ubicacion, external: true }
 ];
 
 const socials = [
@@ -26,27 +25,170 @@ const socials = [
   { img: '/zabdin/instagram.webp', alt: 'Instagram', href: links.instagram },
   { img: '/zabdin/whatsapp.svg', alt: 'WhatsApp', href: links.whatsapp }
 ];
+
+// Contenido de "Quiénes Somos" (extraído de QUIENES SOMOS.pdf)
+const quienes = {
+  intro:
+    'Zabdi Studio, somos un concepto creado para cubrir las necesidades de nuestros clientes cuidando cada detalle de su belleza integral. Nos especializamos principalmente en:',
+  specialties: [
+    'Manos',
+    'Pies',
+    'Cabello',
+    'Lash lifting',
+    'Extensión de pestañas',
+    'Alisados marroquís / Alemán / Queratinas brasileñas'
+  ],
+  blocks: [
+    {
+      title: 'Nuestra misión',
+      text: 'En Zabdi Studio es realzar la belleza natural de nuestros clientes a través de servicios de alta calidad en el cuidado físico de nuestro cabello, rostro, manos y pies.'
+    },
+    {
+      title: 'Nuestro compromiso',
+      text: 'Brindar una experiencia excepcional, ofreciéndoles un valor agregado a su presencia, basado en la atención personalizada, creatividad, frescura y excelencia en cada uno de nuestros servicios, con la finalidad de garantizar la satisfacción total de nuestros clientes.'
+    },
+    {
+      title: 'Nuestra visión',
+      text: 'Ser reconocidos como el referente en servicios de belleza en nuestra comunidad, destacándonos por la alta calidad de nuestros servicios, la innovación constante y la satisfacción total de nuestros clientes. Buscamos expandir nuestra presencia y convertirnos en un destino preferido para quienes buscan cuidado y belleza integral.'
+    }
+  ],
+  values: [
+    {
+      icon: '🤝',
+      name: 'Calidad humana',
+      text: 'Priorizamos las relaciones auténticas y el trato digno con nuestros clientes. Nuestro equipo se dedica a escuchar, comprender y cuidar de cada persona que entra en Zabdi Studio, creando un ambiente cálido y acogedor en donde todos se sientan valorados y respetados.'
+    },
+    {
+      icon: '⭐',
+      name: 'Excelencia',
+      text: 'Nos esforzamos por brindar servicios de alta calidad y resultados excepcionales en todo lo que hacemos, manteniendo un enfoque constante en la mejora continua.'
+    },
+    {
+      icon: '🎨',
+      name: 'Creatividad',
+      text: 'Buscamos la innovación y la originalidad en nuestros servicios, manteniéndonos a la vanguardia de las tendencias en el mundo de la belleza.'
+    },
+    {
+      icon: '❤️',
+      name: 'Pasión',
+      text: 'Nos caracterizamos por la dedicación en aquello que amamos. Buscamos la excelencia en lo que hacemos, es nuestro motor que alimenta la creatividad, la innovación y el compromiso, llevando resultados satisfactorios tanto a nivel personal como profesional.'
+    },
+    {
+      icon: '🌱',
+      name: 'Sustentabilidad',
+      text: 'Nos comprometemos a utilizar prácticas y productos sostenibles, cuidando no solo de nuestros clientes, sino también del medio ambiente.'
+    },
+    {
+      icon: '💫',
+      name: 'Empoderamiento',
+      text: 'Fomentamos la confianza y autoexpresión de nuestros clientes, ayudándolos a sentirse bien con su apariencia y resaltar su belleza única y especial.'
+    }
+  ]
+};
 ---
 
-<html lang="es" class="scroll-smooth">
+<html lang="es">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta
       name="description"
-      content="Zabdín Studio — Catálogo y lista de precios 2026. Busca y filtra servicios de cabello, uñas, manos y pies, facial y corporal, y promociones por día."
+      content="Zabdín Studio — Tarjeta digital. Quiénes somos, catálogo con lista de precios 2026, agenda tu cita y ubicación."
     />
     <title>Zabdín Studio · Tarjeta Digital</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300..800;1,300..800&family=Questrial&display=swap"
       rel="stylesheet"
     />
+    <style is:global>
+      :root {
+        --zabdi-pink: #cf3080;
+        --zabdi-pink-dark: #b02870;
+      }
+
+      .td-display {
+        font-family: 'Century Gothic', 'Questrial', ui-sans-serif, system-ui, sans-serif;
+      }
+
+      .td-body {
+        font-family: 'Mulish', ui-sans-serif, system-ui, sans-serif;
+      }
+
+      /* Botones-píldora del menú: mismas proporciones (552x86) y misma tipografía. */
+      .td-btn {
+        position: relative;
+        display: flex;
+        width: 60%;
+        max-width: 260px;
+        aspect-ratio: 552 / 86;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        border-radius: 9999px;
+        background: var(--zabdi-pink);
+        color: #fff;
+        text-decoration: none;
+        cursor: pointer;
+        padding: 0 6%;
+        container-type: inline-size;
+        transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .td-btn:hover {
+        transform: scale(1.04);
+        filter: brightness(1.04);
+        box-shadow: 0 8px 20px -8px rgba(207, 48, 128, 0.6);
+      }
+
+      .td-btn:active {
+        transform: scale(0.97);
+      }
+
+      .td-btn:focus-visible {
+        outline: 2px solid var(--zabdi-pink);
+        outline-offset: 3px;
+      }
+
+      .td-btn-label {
+        font-family: 'Century Gothic', 'Questrial', ui-sans-serif, system-ui, sans-serif;
+        font-size: 8.4cqi;
+        line-height: 1;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+      }
+
+      /* Botón "volver al menú". */
+      .td-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: 1px solid var(--zabdi-pink);
+        border-radius: 9999px;
+        background: #fff;
+        padding: 0.5rem 1.1rem;
+        color: var(--zabdi-pink);
+        font-family: 'Century Gothic', 'Questrial', ui-sans-serif, system-ui, sans-serif;
+        font-size: 0.95rem;
+        line-height: 1;
+        cursor: pointer;
+        transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+      }
+
+      .td-back:hover {
+        background: var(--zabdi-pink);
+        color: #fff;
+        transform: translateX(-2px);
+      }
+    </style>
   </head>
-  <body class="m-0 font-inter antialiased">
+
+  <body class="td-body m-0 antialiased">
+    <!-- ═══════════════════════ VISTA: MENÚ INICIAL ═══════════════════════ -->
     <main
+      data-view-panel="menu"
       class="flex min-h-dvh w-full flex-col bg-cover bg-center bg-no-repeat"
       style="background-image: url('/zabdin/fondo-tarjeta.webp');"
     >
@@ -69,17 +211,28 @@ const socials = [
 
         <div class="mt-8 flex w-full flex-col items-center gap-5 sm:gap-6">
           {
-            buttons.map((btn) => (
-              <a
-                href={btn.href}
-                target={btn.href.startsWith('http') ? '_blank' : undefined}
-                rel={btn.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                aria-label={btn.alt}
-                class="block w-[60%] max-w-[260px] transition-transform duration-200 hover:scale-[1.04] focus-visible:scale-[1.04] active:scale-[0.97]"
-              >
-                <img src={btn.img} alt={btn.alt} class="h-auto w-full" loading="lazy" />
-              </a>
-            ))
+            menuItems.map((item) =>
+              item.view ? (
+                <button
+                  type="button"
+                  class="td-btn"
+                  data-view={item.view}
+                  aria-label={item.label}
+                >
+                  <span class="td-btn-label">{item.label}</span>
+                </button>
+              ) : (
+                <a
+                  class="td-btn"
+                  href={item.href}
+                  target={item.external ? '_blank' : undefined}
+                  rel={item.external ? 'noopener noreferrer' : undefined}
+                  aria-label={item.label}
+                >
+                  <span class="td-btn-label">{item.label}</span>
+                </a>
+              )
+            )
           }
         </div>
       </div>
@@ -101,17 +254,98 @@ const socials = [
       </footer>
     </main>
 
-    <!-- Catálogo interactivo de precios 2026 -->
+    <!-- ═══════════════════════ VISTA: QUIÉNES SOMOS ═══════════════════════ -->
     <section
-      id="catalogo"
-      class="w-full scroll-mt-4 bg-gradient-to-b from-rose-50 via-amber-50 to-orange-50 px-4 py-14 md:py-20"
+      data-view-panel="quienes"
+      style="display: none;"
+      class="min-h-dvh w-full bg-gradient-to-b from-rose-50 via-amber-50 to-orange-50 px-4 py-10 md:py-14"
+    >
+      <div class="mx-auto max-w-4xl">
+        <button type="button" class="td-back" data-back>
+          <span aria-hidden="true">←</span> Volver al menú
+        </button>
+
+        <header class="mt-8 text-center">
+          <p class="td-display text-sm font-semibold uppercase tracking-[0.3em] text-[#cf3080]">
+            Zabdín Studio
+          </p>
+          <h2 class="td-display mt-2 text-3xl font-bold text-stone-900 md:text-4xl">
+            Quiénes Somos
+          </h2>
+        </header>
+
+        <p class="mt-6 text-center text-lg leading-relaxed text-stone-600">
+          {quienes.intro}
+        </p>
+
+        <ul class="mx-auto mt-6 flex max-w-2xl flex-wrap justify-center gap-2">
+          {
+            quienes.specialties.map((s) => (
+              <li class="td-display rounded-full border border-[#cf3080]/25 bg-white/80 px-4 py-1.5 text-sm text-[#b02870] shadow-sm">
+                {s}
+              </li>
+            ))
+          }
+        </ul>
+
+        <div class="mt-10 grid grid-cols-1 gap-5 md:grid-cols-3">
+          {
+            quienes.blocks.map((block) => (
+              <article class="flex flex-col rounded-2xl border border-[#cf3080]/15 bg-white/90 p-6 shadow-sm">
+                <h3 class="td-display text-lg font-bold text-[#cf3080]">{block.title}</h3>
+                <p class="mt-2 text-sm leading-relaxed text-stone-600">{block.text}</p>
+              </article>
+            ))
+          }
+        </div>
+
+        <header class="mt-14 text-center">
+          <h3 class="td-display text-2xl font-bold text-stone-900 md:text-3xl">
+            Nuestros Valores
+          </h3>
+          <div class="mx-auto mt-3 h-1 w-16 rounded-full bg-[#cf3080]"></div>
+        </header>
+
+        <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
+          {
+            quienes.values.map((value) => (
+              <article class="flex gap-4 rounded-2xl border border-[#cf3080]/15 bg-white/90 p-5 shadow-sm">
+                <span class="text-2xl leading-none" aria-hidden="true">
+                  {value.icon}
+                </span>
+                <div>
+                  <h4 class="td-display text-base font-bold text-stone-800">{value.name}</h4>
+                  <p class="mt-1 text-sm leading-relaxed text-stone-600">{value.text}</p>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+
+        <div class="mt-12 flex justify-center">
+          <button type="button" class="td-back" data-back>
+            <span aria-hidden="true">←</span> Volver al menú
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ VISTA: CATÁLOGO & PRECIOS ═══════════════════════ -->
+    <section
+      data-view-panel="catalogo"
+      style="display: none;"
+      class="min-h-dvh w-full bg-gradient-to-b from-rose-50 via-amber-50 to-orange-50 px-4 py-10 md:py-14"
     >
       <div class="mx-auto max-w-6xl">
-        <header class="mb-8 text-center">
-          <p class="text-sm font-semibold uppercase tracking-widest text-rose-400">
+        <button type="button" class="td-back" data-back>
+          <span aria-hidden="true">←</span> Volver al menú
+        </button>
+
+        <header class="mt-8 mb-8 text-center">
+          <p class="td-display text-sm font-semibold uppercase tracking-[0.3em] text-[#cf3080]">
             Lista 2026
           </p>
-          <h2 class="mt-1 text-3xl font-extrabold text-stone-900 md:text-4xl">
+          <h2 class="td-display mt-2 text-3xl font-extrabold text-stone-900 md:text-4xl">
             Catálogo &amp; Precios
           </h2>
           <p class="mx-auto mt-3 max-w-xl text-stone-500">
@@ -121,26 +355,39 @@ const socials = [
         </header>
 
         <PriceCatalog client:load />
-      </div>
 
-      <div class="mt-14 flex justify-center gap-6">
-        {
-          socials.map((s) => (
-            <a
-              href={s.href}
-              target={s.href.startsWith('http') ? '_blank' : undefined}
-              rel={s.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-              aria-label={s.alt}
-              class="transition-transform duration-200 hover:scale-110"
-            >
-              <img src={s.img} alt={s.alt} class="h-8 w-8" loading="lazy" />
-            </a>
-          ))
-        }
+        <div class="mt-12 flex justify-center">
+          <button type="button" class="td-back" data-back>
+            <span aria-hidden="true">←</span> Volver al menú
+          </button>
+        </div>
       </div>
-      <p class="mt-6 text-center text-xs text-stone-400">
-        Zabdín Studio · Precios vigentes 2026
-      </p>
     </section>
+
+    <script is:inline>
+      (function () {
+        var panels = document.querySelectorAll('[data-view-panel]');
+
+        function show(view) {
+          panels.forEach(function (panel) {
+            panel.style.display =
+              panel.getAttribute('data-view-panel') === view ? '' : 'none';
+          });
+          window.scrollTo(0, 0);
+        }
+
+        document.querySelectorAll('[data-view]').forEach(function (el) {
+          el.addEventListener('click', function () {
+            show(el.getAttribute('data-view'));
+          });
+        });
+
+        document.querySelectorAll('[data-back]').forEach(function (el) {
+          el.addEventListener('click', function () {
+            show('menu');
+          });
+        });
+      })();
+    </script>
   </body>
 </html>

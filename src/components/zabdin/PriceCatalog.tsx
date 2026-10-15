@@ -33,11 +33,11 @@ function ServiceCard({ service }: { service: Service }) {
   return (
     <article className="flex h-full flex-col rounded-2xl border border-rose-100 bg-white/95 p-4 shadow-sm transition-shadow duration-200 hover:shadow-md">
       <div className="flex items-start justify-between gap-2">
-        <h3 className="text-base font-semibold leading-snug text-stone-800">
+        <h3 className="td-display text-base font-semibold leading-snug text-stone-800">
           {service.name}
         </h3>
         {service.price && (
-          <span className="shrink-0 rounded-full bg-rose-100 px-3 py-1 text-sm font-bold text-rose-700">
+          <span className="shrink-0 rounded-full bg-[#cf3080]/10 px-3 py-1 text-sm font-bold text-[#cf3080]">
             {service.price}
           </span>
         )}
@@ -59,7 +59,7 @@ function ServiceCard({ service }: { service: Service }) {
               className="flex items-center justify-between gap-2 rounded-lg bg-rose-50/80 px-3 py-1.5 text-sm"
             >
               <span className="text-stone-600">{option.label}</span>
-              <span className="font-semibold text-rose-700">{option.price}</span>
+              <span className="font-semibold text-[#cf3080]">{option.price}</span>
             </li>
           ))}
         </ul>
@@ -146,7 +146,7 @@ export default function PriceCatalog() {
           aria-pressed={filter === 'all'}
           className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition ${
             filter === 'all'
-              ? 'border-rose-500 bg-rose-500 text-white shadow-sm'
+              ? 'border-[#cf3080] bg-[#cf3080] text-white shadow-sm'
               : 'border-rose-200 bg-white text-stone-600 hover:bg-rose-50'
           }`}
         >
@@ -162,7 +162,7 @@ export default function PriceCatalog() {
               aria-pressed={active}
               className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition ${
                 active
-                  ? 'border-rose-500 bg-rose-500 text-white shadow-sm'
+                  ? 'border-[#cf3080] bg-[#cf3080] text-white shadow-sm'
                   : 'border-rose-200 bg-white text-stone-600 hover:bg-rose-50'
               }`}
             >
@@ -208,7 +208,7 @@ export default function PriceCatalog() {
               setQuery('');
               setFilter('all');
             }}
-            className="mt-4 rounded-full bg-rose-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-rose-600"
+            className="mt-4 rounded-full bg-[#cf3080] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#b02870]"
           >
             Ver todos los servicios
           </button>
@@ -217,10 +217,10 @@ export default function PriceCatalog() {
         <div className="space-y-8">
           {groups.map((group) => (
             <section key={group.category.id}>
-              <h3 className="mb-3 flex items-center gap-2 text-lg font-bold text-stone-800">
+              <h3 className="td-display mb-3 flex items-center gap-2 text-lg font-bold text-stone-800">
                 <span aria-hidden="true">{group.category.emoji}</span>
                 {group.category.label}
-                <span className="ml-1 rounded-full bg-rose-100 px-2 py-0.5 text-xs font-semibold text-rose-700">
+                <span className="ml-1 rounded-full bg-[#cf3080]/10 px-2 py-0.5 text-xs font-semibold text-[#cf3080]">
                   {group.services.length}
                 </span>
               </h3>
