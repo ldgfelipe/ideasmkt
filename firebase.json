@@ -29,11 +29,20 @@
     ],
     "headers": [
       {
-        "source": "**/*.@(js|css|html|svg|json|woff2)",
+        "source": "**/*.@(js|css|woff2)",
         "headers": [
           {
             "key": "Cache-Control",
             "value": "public, max-age=31536000, immutable"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(html|json|svg)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, must-revalidate"
           }
         ]
       }
