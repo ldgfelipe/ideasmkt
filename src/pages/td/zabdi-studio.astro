@@ -34,52 +34,47 @@ const quienes = {
     'Cabello',
     'Lash lifting',
     'Extensión de pestañas',
-    'Alisados marroquís / Alemán / Queratinas brasileñas'
+    'Alisados marroquís / Alisados Alemán / Queratinas brasileñas'
   ],
   blocks: [
     {
-      title: 'Nuestra misión',
-      text: 'En Zabdi Studio es realzar la belleza natural de nuestros clientes a través de servicios de alta calidad en el cuidado físico de nuestro cabello, rostro, manos y pies.'
+      label: 'Nuestra misión',
+      text: ' en Zabdi Studio es realzar la belleza natural de nuestros clientes a través de servicios de alta calidad en el cuidado físico de nuestro cabello, rostro, manos y pies.'
     },
     {
-      title: 'Nuestro compromiso',
-      text: 'Brindar una experiencia excepcional, ofreciéndoles un valor agregado a su presencia, basado en la atención personalizada, creatividad, frescura y excelencia en cada uno de nuestros servicios, con la finalidad de garantizar la satisfacción total de nuestros clientes.'
+      label: 'Nuestro compromiso',
+      text: ' es brindar una experiencia excepcional, ofreciéndoles un valor agregado a su presencia, basado en la atención personalizada, creatividad, frescura y excelencia en cada uno de nuestros servicios, con la finalidad de garantizar la satisfacción total de nuestros clientes.'
     },
     {
-      title: 'Nuestra visión',
-      text: 'Ser reconocidos como el referente en servicios de belleza en nuestra comunidad, destacándonos por la alta calidad de nuestros servicios, la innovación constante y la satisfacción total de nuestros clientes. Buscamos expandir nuestra presencia y convertirnos en un destino preferido para quienes buscan cuidado y belleza integral.'
+      label: 'La visión',
+      text: ' de Zabdi Studio es ser reconocidos como el referente en servicios de belleza en nuestra comunidad, destacándonos por la alta calidad de nuestros servicios, la innovación constante y la satisfacción total de nuestros clientes, buscamos expandir nuestra presencia y ',
+      emphasis: 'convertirnos en un destino preferido para quienes buscan cuidado y belleza integral.'
     }
   ],
   values: [
     {
-      icon: '🤝',
-      name: 'Calidad humana',
-      text: 'Priorizamos las relaciones auténticas y el trato digno con nuestros clientes. Nuestro equipo se dedica a escuchar, comprender y cuidar de cada persona que entra en Zabdi Studio, creando un ambiente cálido y acogedor en donde todos se sientan valorados y respetados.'
+      name: 'Calidad humana:',
+      text: ' Priorizamos las relaciones auténticas y el trato digno con nuestros clientes, nuestro equipo de trabajo se dedica a escuchar, comprender y cuidar de cada persona que entra en Zabdi Studio, creando un ambiente cálido y acogedor en donde todos se sientan valorados y respetados.'
     },
     {
-      icon: '⭐',
-      name: 'Excelencia',
-      text: 'Nos esforzamos por brindar servicios de alta calidad y resultados excepcionales en todo lo que hacemos, manteniendo un enfoque constante en la mejora continua.'
+      name: 'Excelencia:',
+      text: ' Nos esforzamos por brindar servicios de alta calidad y resultados excepcionales en todo lo que hacemos, manteniendo un enfoque constante en la mejora continua.'
     },
     {
-      icon: '🎨',
-      name: 'Creatividad',
-      text: 'Buscamos la innovación y la originalidad en nuestros servicios, manteniéndonos a la vanguardia de las tendencias en el mundo de la belleza.'
+      name: 'Creatividad:',
+      text: ' Buscamos la innovación y la originalidad en nuestros servicios, manteniendo la vanguardia de las tendencias en el mundo de la belleza.'
     },
     {
-      icon: '❤️',
-      name: 'Pasión',
-      text: 'Nos caracterizamos por la dedicación en aquello que amamos. Buscamos la excelencia en lo que hacemos, es nuestro motor que alimenta la creatividad, la innovación y el compromiso, llevando resultados satisfactorios tanto a nivel personal como profesional.'
+      name: 'Pasión:',
+      text: ' Nos caracterizamos por la dedicación en aquello que amamos, buscamos la excelencia en lo que hacemos, es nuestro motor que alimenta la creatividad, la innovación y el compromiso que tenemos llevando resultados satisfactorios tanto a nivel personal como profesional.'
     },
     {
-      icon: '🌱',
-      name: 'Sustentabilidad',
-      text: 'Nos comprometemos a utilizar prácticas y productos sostenibles, cuidando no solo de nuestros clientes, sino también del medio ambiente.'
+      name: 'Sustentabilidad:',
+      text: ' Nos comprometemos a utilizar prácticas y productos sostenibles, cuidando no solo de nuestros clientes, sino también del medio ambiente.'
     },
     {
-      icon: '💫',
-      name: 'Empoderamiento',
-      text: 'Fomentamos la confianza y autoexpresión de nuestros clientes, ayudándolos a sentirse bien con su apariencia y resaltar su belleza única y especial.'
+      name: 'Empoderamiento:',
+      text: ' Fomentamos la confianza y autoexpresión de nuestros clientes, ayudándolos a sentirse bien con su apariencia y resaltar su belleza única y especial.'
     }
   ]
 };
@@ -113,6 +108,129 @@ const quienes = {
 
       .td-body {
         font-family: 'Mulish', ui-sans-serif, system-ui, sans-serif;
+      }
+
+      /* Serif itálica (Times) — igual que en el PDF para los rótulos de los
+         valores y la frase destacada de la visión. */
+      .td-serif {
+        font-family: 'Times New Roman', Times, Georgia, serif;
+        font-style: italic;
+      }
+
+      /* ───────── Vista "Quiénes Somos": recreación del PDF de Illustrator ───────── */
+      .td-quienes {
+        position: relative;
+        margin: 0 auto;
+        width: 100%;
+        max-width: 640px;
+        padding: 2.25rem 11.5% 5.5rem;
+      }
+
+      /* Adorno floral (melocotón/lavanda) de la esquina superior derecha. */
+      .td-quienes__deco {
+        position: absolute;
+        top: 2.5rem;
+        right: 11.5%;
+        width: 23%;
+        max-width: 160px;
+        pointer-events: none;
+      }
+
+      .td-quienes__deco img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .td-quienes__title {
+        margin-top: 8.5rem;
+        font-family: 'Century Gothic', 'Questrial', ui-sans-serif, system-ui, sans-serif;
+        font-size: clamp(1.75rem, 5.4vw, 2.4rem);
+        font-weight: 400;
+        line-height: 1.05;
+        letter-spacing: 0.01em;
+        color: #050505;
+        text-transform: uppercase;
+      }
+
+      .td-quienes__intro,
+      .td-quienes__list,
+      .td-quienes__blocks,
+      .td-quienes__values {
+        font-family: 'Century Gothic', 'Questrial', ui-sans-serif, system-ui, sans-serif;
+        font-size: clamp(1rem, 2.4vw, 1.06rem);
+        line-height: 1.7;
+        color: #545c5c;
+      }
+
+      .td-quienes__intro {
+        margin-top: 1.75rem;
+      }
+
+      .td-quienes__list {
+        margin-top: 1.1rem;
+        padding-left: 0;
+        list-style: none;
+      }
+
+      .td-quienes__list li {
+        position: relative;
+        padding-left: 1.15rem;
+      }
+
+      .td-quienes__list li::before {
+        content: '•';
+        position: absolute;
+        left: 0.2rem;
+      }
+
+      .td-quienes__blocks {
+        margin-top: 2.25rem;
+      }
+
+      .td-quienes__blocks p {
+        margin-top: 1.15rem;
+      }
+
+      .td-quienes__blocks p:first-child {
+        margin-top: 0;
+      }
+
+      .td-quienes__label {
+        font-weight: 700;
+        color: #3f4747;
+      }
+
+      .td-quienes__values-title {
+        margin-top: 2.75rem;
+        font-family: 'Century Gothic', 'Questrial', ui-sans-serif, system-ui, sans-serif;
+        font-size: clamp(1.4rem, 3.6vw, 1.7rem);
+        font-weight: 700;
+        text-align: right;
+        color: #050505;
+      }
+
+      .td-quienes__values {
+        margin-top: 1.5rem;
+      }
+
+      .td-quienes__values p {
+        margin-top: 1.1rem;
+      }
+
+      .td-quienes__values p:first-child {
+        margin-top: 0;
+      }
+
+      .td-quienes__value-name {
+        font-size: 1.12rem;
+        color: #ac3c7c;
+      }
+
+      .td-quienes__foot {
+        display: flex;
+        justify-content: center;
+        margin-top: 3.25rem;
       }
 
       /* Botones-píldora del menú: mismas proporciones (552x86) y misma tipografía. */
@@ -380,74 +498,53 @@ const quienes = {
     </main>
 
     <!-- ═══════════════════════ VISTA: QUIÉNES SOMOS ═══════════════════════ -->
-    <section
-      data-view-panel="quienes"
-      style="display: none;"
-      class="min-h-dvh w-full bg-gradient-to-b from-rose-50 via-amber-50 to-orange-50 px-4 py-10 md:py-14"
-    >
-      <div class="mx-auto max-w-4xl">
-        <button type="button" class="td-back" data-back>
+    <!-- Recreación del diseño original en PDF (Adobe Illustrator): fondo blanco,
+         columna tipo teléfono, tipografía Century Gothic + Times itálica y
+         rótulos de valores en rosa, con adorno floral arriba a la derecha. -->
+    <section data-view-panel="quienes" style="display: none;" class="min-h-dvh w-full bg-white">
+      <div class="td-quienes">
+        <div class="td-quienes__deco" aria-hidden="true">
+          <img src="/zabdin/quienes-deco.png" alt="" decoding="async" />
+        </div>
+
+        <button type="button" class="td-back td-quienes__back" data-back>
           <span aria-hidden="true">←</span> Volver al menú
         </button>
 
-        <header class="mt-8 text-center">
-          <p class="td-display text-sm font-semibold uppercase tracking-[0.3em] text-[#cf3080]">
-            Zabdín Studio
-          </p>
-          <h2 class="td-display mt-2 text-3xl font-bold text-stone-900 md:text-4xl">
-            Quiénes Somos
-          </h2>
-        </header>
+        <h2 class="td-quienes__title">Quienes Somos</h2>
 
-        <p class="mt-6 text-center text-xl leading-relaxed text-stone-700">
-          {quienes.intro}
-        </p>
+        <p class="td-quienes__intro">{quienes.intro}</p>
 
-        <ul class="mx-auto mt-6 flex max-w-2xl flex-wrap justify-center gap-2">
-          {
-            quienes.specialties.map((s) => (
-              <li class="td-display rounded-full border border-[#cf3080]/25 bg-white/80 px-5 py-2 text-base text-[#b02870] shadow-sm">
-                {s}
-              </li>
-            ))
-          }
+        <ul class="td-quienes__list">
+          {quienes.specialties.map((s) => <li>{s}</li>)}
         </ul>
 
-        <div class="mt-10 grid grid-cols-1 gap-5 md:grid-cols-3">
+        <div class="td-quienes__blocks">
           {
             quienes.blocks.map((block) => (
-              <article class="flex flex-col rounded-2xl border border-[#cf3080]/15 bg-white/90 p-6 shadow-sm">
-                <h3 class="td-display text-xl font-bold text-[#cf3080]">{block.title}</h3>
-                <p class="mt-2 text-base leading-relaxed text-stone-700">{block.text}</p>
-              </article>
+              <p>
+                <strong class="td-quienes__label">{block.label}</strong>
+                {block.text}
+                {block.emphasis && <em class="td-serif">{block.emphasis}</em>}
+              </p>
             ))
           }
         </div>
 
-        <header class="mt-14 text-center">
-          <h3 class="td-display text-2xl font-bold text-stone-900 md:text-3xl">
-            Nuestros Valores
-          </h3>
-          <div class="mx-auto mt-3 h-1 w-16 rounded-full bg-[#cf3080]"></div>
-        </header>
+        <h3 class="td-quienes__values-title">Nuestros Valores</h3>
 
-        <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <div class="td-quienes__values">
           {
             quienes.values.map((value) => (
-              <article class="flex gap-4 rounded-2xl border border-[#cf3080]/15 bg-white/90 p-5 shadow-sm">
-                <span class="text-3xl leading-none" aria-hidden="true">
-                  {value.icon}
-                </span>
-                <div>
-                  <h4 class="td-display text-lg font-bold text-stone-800">{value.name}</h4>
-                  <p class="mt-1 text-base leading-relaxed text-stone-700">{value.text}</p>
-                </div>
-              </article>
+              <p>
+                <span class="td-serif td-quienes__value-name">{value.name}</span>
+                {value.text}
+              </p>
             ))
           }
         </div>
 
-        <div class="mt-12 flex justify-center">
+        <div class="td-quienes__foot">
           <button type="button" class="td-back" data-back>
             <span aria-hidden="true">←</span> Volver al menú
           </button>
@@ -459,21 +556,32 @@ const quienes = {
     <section
       data-view-panel="catalogo"
       style="display: none;"
-      class="min-h-dvh w-full bg-gradient-to-b from-rose-50 via-amber-50 to-orange-50 px-4 py-10 md:py-14"
+      class="min-h-dvh w-full bg-[#f6ece2] px-4 pt-5 pb-16 sm:px-6"
     >
-      <div class="mx-auto max-w-6xl">
+      <div class="mx-auto max-w-[760px]">
         <button type="button" class="td-back" data-back>
           <span aria-hidden="true">←</span> Volver al menú
         </button>
 
-        <header class="mt-8 mb-8 text-center">
-          <p class="td-display text-sm font-semibold uppercase tracking-[0.3em] text-[#cf3080]">
-            Lista 2026
-          </p>
-          <h2 class="td-display mt-2 text-3xl font-extrabold text-stone-900 md:text-4xl">
-            Catálogo &amp; Precios
+        <img
+          src="/zabdin/precios-banner.webp"
+          alt=""
+          width="750"
+          height="470"
+          class="mx-auto mt-4 w-full max-w-[560px] select-none"
+          draggable="false"
+        />
+
+        <header class="mt-6 mb-7 text-center">
+          <h2
+            class="td-display text-[1.7rem] font-bold uppercase leading-tight tracking-[0.12em] text-[#7b5b46] sm:text-4xl"
+          >
+            Lista de Precios
           </h2>
-          <p class="mx-auto mt-3 max-w-xl text-lg text-stone-600">
+          <p class="td-display mt-1.5 text-sm font-bold uppercase tracking-[0.42em] text-[#cf3080]">
+            2026
+          </p>
+          <p class="mx-auto mt-3 max-w-lg text-[1rem] text-[#8c8075]">
             Busca el servicio que necesitas o filtra por categoría. Encuentra tu
             tratamiento ideal en segundos.
           </p>
