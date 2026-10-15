@@ -494,20 +494,27 @@ const quienes = {
         var panels = document.querySelectorAll('[data-view-panel]');
         var menu = document.querySelector('[data-view-panel="menu"]');
 
-        function show(view) {
+        function reveal(scope) {
+          if (!scope) return;
+          scope.querySelectorAll('.reveal').forEach(function (el) {
+            el.classList.add('is-in');
+          });
+        }
+
+        // Vista actual según el hash de la URL (#catalogo / #quienes).
+        function currentView() {
+          var h = (location.hash || '').replace('#', '');
+          return h === 'quienes' || h === 'catalogo' ? h : 'menu';
+        }
+
+        function render() {
+          var view = currentView();
           panels.forEach(function (panel) {
             panel.style.display =
               panel.getAttribute('data-view-panel') === view ? '' : 'none';
           });
           window.scrollTo(0, 0);
           if (view === 'menu' && menu) reveal(menu);
-        }
-
-        function reveal(scope) {
-          if (!scope) return;
-          scope.querySelectorAll('.reveal').forEach(function (el) {
-            el.classList.add('is-in');
-          });
         }
 
         // Entrada escalonada cuando el menú está en pantalla.
@@ -532,17 +539,35 @@ const quienes = {
           }, 350);
         }
 
+        // Estado inicial: recuerda si abrimos directo en una vista interna.
+        history.replaceState({ view: currentView(), fromCard: false }, '');
+        render();
+
+        // Abrir Catálogo / Quiénes Somos crea una entrada nueva en el historial,
+        // así el botón "atrás" del teléfono vuelve al menú de la tarjeta (no a
+        // la página anterior).
         document.querySelectorAll('[data-view]').forEach(function (el) {
           el.addEventListener('click', function () {
-            show(el.getAttribute('data-view'));
+            var view = el.getAttribute('data-view');
+            history.pushState({ view: view, fromCard: true }, '', '#' + view);
+            render();
           });
         });
 
+        // "Volver al menú": usa el historial si venimos del menú de la tarjeta.
         document.querySelectorAll('[data-back]').forEach(function (el) {
           el.addEventListener('click', function () {
-            show('menu');
+            if (history.state && history.state.fromCard) {
+              history.back();
+            } else {
+              location.hash = '';
+              render();
+            }
           });
         });
+
+        window.addEventListener('popstate', render);
+        window.addEventListener('hashchange', render);
       })();
     </script>
   </body>
