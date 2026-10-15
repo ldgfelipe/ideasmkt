@@ -2,7 +2,9 @@
 
 Última sesión: 20/ago/2026
 
-## Estado actual (`src/pages/td/zabdin-studio.astro`)
+## Estado actual (`src/pages/td/zabdi-studio.astro`)
+
+> Ruta pública: `/td/zabdi-studio`. La ruta antigua `/td/zabdin-studio` redirige 301 (ver `firebase.json`).
 
 - Página reconstruida para parecerse a `public/zabdin/TARJETA_DIGITAL.jpg` (diseño de referencia del PDF).
 - Estructura vertical en flujo hacia abajo, columna única `max-w-[1050px]` centrada.

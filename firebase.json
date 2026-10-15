@@ -15,6 +15,18 @@
         "destination": "/index.html"
       }
     ],
+    "redirects": [
+      {
+        "source": "/td/zabdin-studio",
+        "destination": "/td/zabdi-studio/",
+        "type": 301
+      },
+      {
+        "source": "/td/zabdin-studio/**",
+        "destination": "/td/zabdi-studio/",
+        "type": 301
+      }
+    ],
     "headers": [
       {
         "source": "**/*.@(js|css|html|svg|json|woff2)",
