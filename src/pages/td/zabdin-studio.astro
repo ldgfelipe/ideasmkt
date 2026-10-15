@@ -5,7 +5,7 @@ import '../../styles/global.css';
 import PriceCatalog from '../../components/zabdin/PriceCatalog';
 
 const links = {
-  agenda: '#', // TODO: enlace real (WhatsApp / agenda)
+  agenda: 'https://wa.link/2rv9kq', // Agenda tu cita (WhatsApp)
   ubicacion: 'https://www.google.com/maps/search/?api=1&query=Zabd%C3%ADn+Studio',
   facebook: '#', // TODO: URL real
   instagram: '#', // TODO: URL real
@@ -16,7 +16,7 @@ const links = {
 const menuItems = [
   { label: 'Quiénes Somos', view: 'quienes' },
   { label: 'Catálogo', view: 'catalogo' },
-  { label: 'Agenda tu cita', href: links.agenda },
+  { label: 'Agenda tu cita', href: links.agenda, external: true },
   { label: 'Ubicación', href: links.ubicacion, external: true }
 ];
 
