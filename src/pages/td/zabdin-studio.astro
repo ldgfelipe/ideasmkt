@@ -7,9 +7,8 @@ import PriceCatalog from '../../components/zabdin/PriceCatalog';
 const links = {
   agenda: 'https://wa.link/2rv9kq', // Agenda tu cita (WhatsApp)
   ubicacion: 'https://www.google.com/maps/search/?api=1&query=Zabd%C3%ADn+Studio',
-  facebook: '#', // TODO: URL real
-  instagram: '#', // TODO: URL real
-  whatsapp: '#' // TODO: número real
+  facebook: 'https://www.facebook.com/zbstudiopuebla/',
+  instagram: 'https://www.instagram.com/zabdistudio_/'
 };
 
 // Botones del menú inicial. `view` abre una vista; `href` navega.
@@ -22,8 +21,23 @@ const menuItems = [
 
 const socials = [
   { img: '/zabdin/facebook.webp', alt: 'Facebook', href: links.facebook },
-  { img: '/zabdin/instagram.webp', alt: 'Instagram', href: links.instagram },
-  { img: '/zabdin/whatsapp.svg', alt: 'WhatsApp', href: links.whatsapp }
+  { img: '/zabdin/instagram.webp', alt: 'Instagram', href: links.instagram }
+];
+
+// Destellos decorativos de la animación de entrada (posición + retardo).
+const sparkles = [
+  { top: '10%', left: '14%', delay: '0.2s', size: 14 },
+  { top: '18%', left: '82%', delay: '1.1s', size: 10 },
+  { top: '30%', left: '8%', delay: '0.7s', size: 9 },
+  { top: '34%', left: '90%', delay: '1.6s', size: 13 },
+  { top: '48%', left: '18%', delay: '2.2s', size: 11 },
+  { top: '52%', left: '84%', delay: '0.4s', size: 12 },
+  { top: '63%', left: '24%', delay: '1.3s', size: 10 },
+  { top: '66%', left: '76%', delay: '2.5s', size: 9 },
+  { top: '76%', left: '12%', delay: '1.9s', size: 12 },
+  { top: '80%', left: '88%', delay: '0.9s', size: 11 },
+  { top: '88%', left: '30%', delay: '2.8s', size: 9 },
+  { top: '90%', left: '68%', delay: '1.5s', size: 12 }
 ];
 
 // Contenido de "Quiénes Somos" (extraído de QUIENES SOMOS.pdf)
@@ -183,6 +197,129 @@ const quienes = {
         color: #fff;
         transform: translateX(-2px);
       }
+
+      /* ────────────── Animación de entrada + destellos ────────────── */
+      .td-menu-inner {
+        position: relative;
+      }
+
+      .td-sparkles {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .td-sparkle {
+        position: absolute;
+        display: block;
+        background: linear-gradient(180deg, #ffffff 0%, #ffe3f1 55%, #ffc2e0 100%);
+        clip-path: polygon(
+          50% 0%,
+          58% 42%,
+          100% 50%,
+          58% 58%,
+          50% 100%,
+          42% 58%,
+          0% 50%,
+          42% 42%
+        );
+        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.95));
+        opacity: 0;
+        transform: scale(0.2) rotate(0deg);
+        animation: td-twinkle 3.4s ease-in-out infinite;
+      }
+
+      @keyframes td-twinkle {
+        0%,
+        100% {
+          opacity: 0;
+          transform: scale(0.2) rotate(0deg);
+        }
+        45% {
+          opacity: 1;
+          transform: scale(1) rotate(72deg);
+        }
+        60% {
+          opacity: 0.6;
+          transform: scale(0.7) rotate(90deg);
+        }
+      }
+
+      /* Reveal escalonado: logo → eslogan → botones. */
+      .reveal {
+        opacity: 0;
+        transform: translateY(22px) scale(0.96);
+        filter: blur(7px);
+        transition:
+          opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+          transform 1s cubic-bezier(0.22, 1, 0.36, 1),
+          filter 0.9s ease;
+        transition-delay: var(--d, 0ms);
+        will-change: opacity, transform, filter;
+      }
+
+      .reveal.is-in {
+        opacity: 1;
+        transform: none;
+        filter: none;
+      }
+
+      /* Destello de luz que recorre el logo. */
+      .td-logo-wrap {
+        position: relative;
+        display: inline-block;
+        line-height: 0;
+        z-index: 2;
+      }
+
+      .td-logo-wrap::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          115deg,
+          transparent 42%,
+          rgba(255, 255, 255, 0.85) 50%,
+          transparent 58%
+        );
+        background-size: 260% 100%;
+        background-position: 130% 0;
+        -webkit-mask: url('/zabdin/logo-zabdin.webp') center / contain no-repeat;
+        mask: url('/zabdin/logo-zabdin.webp') center / contain no-repeat;
+        animation: td-sheen 4.5s ease-in-out 1.4s infinite;
+        pointer-events: none;
+      }
+
+      @keyframes td-sheen {
+        0% {
+          background-position: 130% 0;
+        }
+        22%,
+        100% {
+          background-position: -130% 0;
+        }
+      }
+
+      .td-btn {
+        z-index: 2;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .reveal {
+          opacity: 1;
+          transform: none;
+          filter: none;
+          transition: none;
+        }
+
+        .td-sparkle,
+        .td-logo-wrap::after {
+          animation: none;
+          opacity: 0;
+        }
+      }
     </style>
   </head>
 
@@ -195,50 +332,69 @@ const quienes = {
     >
       <div class="h-[3dvh] min-h-[16px] w-full bg-[#a2a19f]"></div>
 
-      <div class="mx-auto flex w-full max-w-[1050px] flex-col items-center px-4 pt-6 pb-10">
-        <img
-          src="/zabdin/logo-zabdin.webp"
-          alt="Zabdín Studio"
-          class="w-[85%] max-w-[440px]"
-          loading="eager"
-        />
+      <div
+        class="td-menu-inner mx-auto flex w-full max-w-[1050px] flex-col items-center px-4 pt-6 pb-10"
+      >
+        <!-- Destellos decorativos -->
+        <div class="td-sparkles" aria-hidden="true">
+          {
+            sparkles.map((s) => (
+              <span
+                class="td-sparkle"
+                style={`top:${s.top};left:${s.left};width:${s.size}px;height:${s.size}px;animation-delay:${s.delay};`}
+              />
+            ))
+          }
+        </div>
+
+        <div class="td-logo-wrap reveal w-[85%] max-w-[440px]" style="--d:100ms">
+          <img
+            src="/zabdin/logo-zabdin.webp"
+            alt="Zabdín Studio"
+            class="w-full"
+            loading="eager"
+          />
+        </div>
 
         <img
           src="/zabdin/donde-comienza.webp"
           alt="Donde la magia comienza"
-          class="mt-4 w-[58%] max-w-[290px]"
-          loading="lazy"
+          class="reveal mt-4 w-[58%] max-w-[290px]"
+          style="--d:450ms"
+          loading="eager"
         />
 
         <div class="mt-8 flex w-full flex-col items-center gap-5 sm:gap-6">
           {
-            menuItems.map((item) =>
-              item.view ? (
-                <button
-                  type="button"
-                  class="td-btn"
-                  data-view={item.view}
-                  aria-label={item.label}
-                >
-                  <span class="td-btn-label">{item.label}</span>
-                </button>
-              ) : (
-                <a
-                  class="td-btn"
-                  href={item.href}
-                  target={item.external ? '_blank' : undefined}
-                  rel={item.external ? 'noopener noreferrer' : undefined}
-                  aria-label={item.label}
-                >
-                  <span class="td-btn-label">{item.label}</span>
-                </a>
-              )
-            )
+            menuItems.map((item, i) => (
+              <div class="reveal flex w-full justify-center" style={`--d:${820 + i * 160}ms`}>
+                {item.view ? (
+                  <button
+                    type="button"
+                    class="td-btn"
+                    data-view={item.view}
+                    aria-label={item.label}
+                  >
+                    <span class="td-btn-label">{item.label}</span>
+                  </button>
+                ) : (
+                  <a
+                    class="td-btn"
+                    href={item.href}
+                    target={item.external ? '_blank' : undefined}
+                    rel={item.external ? 'noopener noreferrer' : undefined}
+                    aria-label={item.label}
+                  >
+                    <span class="td-btn-label">{item.label}</span>
+                  </a>
+                )}
+              </div>
+            ))
           }
         </div>
       </div>
 
-      <footer class="mt-auto flex min-h-[44px] w-full items-center justify-center gap-7 bg-[#a2a19f] py-2">
+      <footer class="reveal mt-auto flex min-h-[44px] w-full items-center justify-center gap-7 bg-[#a2a19f] py-2" style="--d:1500ms">
         {
           socials.map((s) => (
             <a
@@ -368,6 +524,7 @@ const quienes = {
     <script is:inline>
       (function () {
         var panels = document.querySelectorAll('[data-view-panel]');
+        var menu = document.querySelector('[data-view-panel="menu"]');
 
         function show(view) {
           panels.forEach(function (panel) {
@@ -375,6 +532,36 @@ const quienes = {
               panel.getAttribute('data-view-panel') === view ? '' : 'none';
           });
           window.scrollTo(0, 0);
+          if (view === 'menu' && menu) reveal(menu);
+        }
+
+        function reveal(scope) {
+          if (!scope) return;
+          scope.querySelectorAll('.reveal').forEach(function (el) {
+            el.classList.add('is-in');
+          });
+        }
+
+        // Entrada escalonada cuando el menú está en pantalla.
+        if (menu) {
+          if ('IntersectionObserver' in window) {
+            var io = new IntersectionObserver(
+              function (entries) {
+                entries.forEach(function (entry) {
+                  if (entry.isIntersecting) {
+                    reveal(menu);
+                    io.disconnect();
+                  }
+                });
+              },
+              { threshold: 0.12 }
+            );
+            io.observe(menu);
+          }
+          // Respaldo: revelar igualmente tras un instante.
+          window.setTimeout(function () {
+            reveal(menu);
+          }, 350);
         }
 
         document.querySelectorAll('[data-view]').forEach(function (el) {
