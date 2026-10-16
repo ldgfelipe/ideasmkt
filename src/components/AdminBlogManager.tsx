@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { auth, onAuthStateChanged } from '../lib/firebase';
-import { signOut } from 'firebase/auth';
+import { useSession, type Session } from '../lib/session';
+import AdminShell from './admin/AdminShell';
 import {
   getAllPosts,
   createPost,
@@ -25,10 +25,8 @@ const emptyPost: Omit<FirestorePost, 'id' | 'createdAt' | 'updatedAt'> = {
 };
 
 export default function AdminBlogManager() {
-  const [user, setUser] = useState<any>(null);
+  const session: Session = useSession();
   const [posts, setPosts] = useState<FirestorePost[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [authChecked, setAuthChecked] = useState(false);
   const [view, setView] = useState<ViewMode>('list');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyPost);
@@ -39,20 +37,9 @@ export default function AdminBlogManager() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!auth) return;
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
-      setUser(u);
-      setAuthChecked(true);
-      setLoading(false);
-      if (!u) window.location.href = '/login';
-    });
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (!user) return;
+    if (!session.isAdmin) return;
     loadPosts();
-  }, [user]);
+  }, [session.isAdmin]);
 
   async function loadPosts() {
     try {
@@ -61,13 +48,6 @@ export default function AdminBlogManager() {
     } catch (err) {
       console.error('Error loading posts:', err);
     }
-  }
-
-  function handleLogout() {
-    if (!auth) return;
-    signOut(auth).then(() => {
-      window.location.href = '/login';
-    });
   }
 
   function startCreate() {
@@ -157,16 +137,6 @@ export default function AdminBlogManager() {
     }
   }
 
-  if (!authChecked) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600" />
-      </div>
-    );
-  }
-
-  if (!user) return null;
-
   const dateFormatter = new Intl.DateTimeFormat('es-ES', {
     year: 'numeric',
     month: 'short',
@@ -174,28 +144,7 @@ export default function AdminBlogManager() {
   });
 
   return (
-    <div className="min-h-screen">
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <a href="/admin" className="text-gray-500 hover:text-gray-700 text-sm">
-              ← Panel
-            </a>
-            <h1 className="text-xl font-bold text-gray-900">Gestión del Blog</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600">{user.email}</span>
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors text-sm"
-            >
-              Cerrar sesión
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 lg:px-8 py-8">
+    <AdminShell session={session} current="/admin/blog">
         {view === 'list' && (
           <>
             <div className="flex justify-between items-center mb-6">
@@ -435,7 +384,6 @@ export default function AdminBlogManager() {
             </div>
           </div>
         )}
-      </main>
-    </div>
+    </AdminShell>
   );
 }

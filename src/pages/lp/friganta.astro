@@ -6,6 +6,7 @@
 // IMPORTANTE: importar global.css o Tailwind no aplica ningún estilo. El HTML
 // original traía el CDN de Tailwind; aquí se usa el Tailwind del proyecto.
 import '../../styles/global.css';
+import Analytics from '../../components/Analytics.astro';
 
 const title = 'Friganta | Almacenamiento en Frío B2B en Puebla';
 const description =
@@ -52,6 +53,8 @@ const gallery = [
     <meta name="generator" content={Astro.generator} />
   </head>
   <body class="bg-gray-50 text-gray-800 font-sans">
+    <!-- Analítica propia: visita y clics (incluidos los de llamada) en Firestore -->
+    <Analytics pageId="lp-friganta" tipo="lp" />
     <!-- Hero Section -->
     <!-- La imagen de fondo es la misma del sitio de Friganta: un banner que se
          difumina hacia abajo, por eso se ve bien sobre el azul de la sección. -->
@@ -83,10 +86,10 @@ const gallery = [
             >
               Solicita una cotización
             </a>
-            <!-- Botón de llamada: el clic se registra en Firestore (colección eventos) -->
+            <!-- Botón de llamada: el clic se registra en Firestore (eventos) -->
             <a
               href="tel:+522211847798"
-              data-call-track="hero"
+              data-track-location="hero"
               class="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-950/50 px-6 py-3 text-lg font-semibold text-white ring-1 ring-white/40 transition hover:bg-blue-950/70"
             >
               <svg
@@ -459,7 +462,7 @@ const gallery = [
             <h3 class="text-lg font-semibold text-blue-900 mb-2">Teléfono</h3>
             <a
               href="tel:+522211847798"
-              data-call-track="contacto-tarjeta"
+              data-track-location="contacto-tarjeta"
               class="text-lg font-bold text-blue-700 hover:text-blue-900"
             >
               +52 221 184 7798
@@ -532,7 +535,7 @@ const gallery = [
         <div class="mt-10 text-center">
           <a
             href="tel:+522211847798"
-            data-call-track="contacto-boton"
+            data-track-location="contacto-boton"
             class="inline-flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition duration-300"
           >
             <svg
@@ -707,34 +710,6 @@ const gallery = [
           lightboxImg.alt = '';
         });
       }
-
-      // --- Clics en los botones de llamada ---------------------------------
-      // El enlace tel: nunca se bloquea: si el registro falla, la llamada sale
-      // igual (no hay preventDefault). El SDK se precalienta al apuntar o
-      // enfocar el botón, para que el clic ya lo encuentre listo.
-      const trackCall = async (ubicacion: string) => {
-        try {
-          const { db, firestore } = await getDb();
-          await firestore.addDoc(firestore.collection(db, 'eventos'), {
-            type: 'call_click',
-            source: 'lp-friganta',
-            location: ubicacion,
-            phone: '+522211847798',
-            createdAt: firestore.serverTimestamp()
-          });
-        } catch (error) {
-          console.error('No se pudo registrar el clic de llamada:', error);
-        }
-      };
-
-      document.querySelectorAll<HTMLAnchorElement>('a[data-call-track]').forEach((link) => {
-        const warmUp = () => void loadSdk().catch(() => {});
-        link.addEventListener('pointerenter', warmUp, { once: true });
-        link.addEventListener('focus', warmUp, { once: true });
-        link.addEventListener('click', () =>
-          void trackCall(link.dataset.callTrack ?? 'sin-ubicacion')
-        );
-      });
     </script>
   </body>
 </html>

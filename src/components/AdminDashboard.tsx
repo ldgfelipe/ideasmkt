@@ -1,7 +1,19 @@
+// Resumen del panel: leads y unas cuantas cifras globales. Las estadísticas
+// detalladas por página viven en /admin/paginas.
 import { useEffect, useState } from 'react';
-import { auth, onAuthStateChanged, db } from '../lib/firebase';
-import { signOut } from 'firebase/auth';
-import { collection, query, orderBy, where, onSnapshot, type QuerySnapshot, type DocumentData } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import {
+  collection,
+  getCountFromServer,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+  type DocumentData,
+  type QuerySnapshot
+} from 'firebase/firestore';
+import { useSession, type Session } from '../lib/session';
+import AdminShell from './admin/AdminShell';
 
 interface Lead {
   id: string;
@@ -9,175 +21,132 @@ interface Lead {
   email: string;
   company?: string;
   message: string;
+  source?: string;
   status: string;
   createdAt: { toDate: () => Date } | null;
 }
 
+const isoToday = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
+    d.getDate()
+  ).padStart(2, '0')}`;
+};
+
 export default function AdminDashboard() {
-  const [user, setUser] = useState<any>(null);
+  const session: Session = useSession();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [callClicks, setCallClicks] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [authChecked, setAuthChecked] = useState(false);
+  const [eventsToday, setEventsToday] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
 
   useEffect(() => {
-    if (!auth) return;
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
-      setUser(u);
-      setAuthChecked(true);
-      setLoading(false);
-      if (!u) {
-        window.location.href = '/login';
+    if (!db || !session.isAdmin) return;
+
+    const unsubscribeLeads = onSnapshot(
+      query(collection(db, 'leads'), orderBy('createdAt', 'desc')),
+      (snapshot: QuerySnapshot<DocumentData>) => {
+        setLeads(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })) as Lead[]);
       }
-    });
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (!db || !user) return;
-    const q = query(collection(db, 'leads'), orderBy('createdAt', 'desc'));
-    const unsubscribe = onSnapshot(q, (snapshot: QuerySnapshot<DocumentData>) => {
-      const data = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Lead[];
-      setLeads(data);
-    });
-    return () => unsubscribe();
-  }, [user]);
-
-  // Clics en los botones de llamada (los escribe la landing de Friganta)
-  useEffect(() => {
-    if (!db || !user) return;
-    const q = query(collection(db, 'eventos'), where('type', '==', 'call_click'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setCallClicks(snapshot.size);
-    });
-    return () => unsubscribe();
-  }, [user]);
-
-  if (!authChecked) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
-      </div>
     );
-  }
 
-  if (!user) return null;
+    const unsubscribeCalls = onSnapshot(
+      query(collection(db, 'eventos'), where('type', '==', 'call_click')),
+      (snapshot) => setCallClicks(snapshot.size)
+    );
 
-  const handleLogout = async () => {
-    if (!auth) return;
-    await signOut(auth);
-    window.location.href = '/login';
-  };
+    getCountFromServer(query(collection(db, 'eventos'), where('date', '==', isoToday())))
+      .then((snapshot) => setEventsToday(snapshot.data().count))
+      .catch((error) => console.error('No se pudo contar los eventos de hoy:', error));
+
+    getCountFromServer(collection(db, 'paginas'))
+      .then((snapshot) => setPageCount(snapshot.data().count))
+      .catch((error) => console.error('No se pudo contar las páginas:', error));
+
+    return () => {
+      unsubscribeLeads();
+      unsubscribeCalls();
+    };
+  }, [session.isAdmin]);
 
   const newLeads = leads.filter((l) => l.status === 'new').length;
 
-  return (
-    <div className="min-h-screen">
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-bold text-gray-900">Panel de Administración</h1>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600">{user.email}</span>
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors text-sm"
-            >
-              Cerrar sesión
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 lg:px-8 py-8">
-        <div className="flex gap-3 mb-8">
-          <a
-            href="/admin"
-            className="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium"
-          >
-            Leads
-          </a>
-          <a
-            href="/admin/blog"
-            className="bg-white text-gray-700 px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 hover:bg-gray-50"
-          >
-            Blog
-          </a>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow p-6 border border-gray-100">
-            <p className="text-gray-500 text-sm">Total de leads</p>
-            <p className="text-3xl font-bold text-gray-900">{leads.length}</p>
-          </div>
-          <div className="bg-white rounded-xl shadow p-6 border border-gray-100">
-            <p className="text-gray-500 text-sm">Nuevos</p>
-            <p className="text-3xl font-bold text-purple-600">{newLeads}</p>
-          </div>
-          <div className="bg-white rounded-xl shadow p-6 border border-gray-100">
-            <p className="text-gray-500 text-sm">Tasa de conversión</p>
-            <p className="text-3xl font-bold text-green-600">
-              {leads.length ? Math.round((newLeads / leads.length) * 100) : 0}%
-            </p>
-          </div>
-          <div className="bg-white rounded-xl shadow p-6 border border-gray-100">
-            <p className="text-gray-500 text-sm">Clics en llamada</p>
-            <p className="text-3xl font-bold text-blue-600">{callClicks}</p>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow border border-gray-100 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-100">
-            <h2 className="font-semibold text-gray-900">Leads recientes</h2>
-          </div>
-          {leads.length === 0 ? (
-            <p className="text-gray-500 p-6">No hay leads todavía.</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-gray-50 text-gray-500">
-                  <tr>
-                    <th className="text-left p-4 font-medium">Nombre</th>
-                    <th className="text-left p-4 font-medium">Email</th>
-                    <th className="text-left p-4 font-medium">Empresa</th>
-                    <th className="text-left p-4 font-medium">Mensaje</th>
-                    <th className="text-left p-4 font-medium">Fecha</th>
-                    <th className="text-left p-4 font-medium">Estado</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {leads.map((lead) => (
-                    <tr key={lead.id} className="hover:bg-gray-50">
-                      <td className="p-4 font-medium text-gray-900">{lead.name}</td>
-                      <td className="p-4 text-gray-600">{lead.email}</td>
-                      <td className="p-4 text-gray-600">{lead.company || '-'}</td>
-                      <td className="p-4 text-gray-600 max-w-xs truncate">{lead.message}</td>
-                      <td className="p-4 text-gray-600">
-                        {lead.createdAt
-                          ? new Date(lead.createdAt.toDate()).toLocaleDateString('es-ES')
-                          : '—'}
-                      </td>
-                      <td className="p-4">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            lead.status === 'new'
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-gray-100 text-gray-600'
-                          }`}
-                        >
-                          {lead.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      </main>
+  const card = (label: string, value: number | string, color = 'text-gray-900') => (
+    <div className="bg-white rounded-xl shadow p-6 border border-gray-100">
+      <p className="text-gray-500 text-sm">{label}</p>
+      <p className={`text-3xl font-bold ${color}`}>{value}</p>
     </div>
+  );
+
+  return (
+    <AdminShell session={session} current="/admin">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+        {card('Total de leads', leads.length)}
+        {card('Nuevos', newLeads, 'text-purple-600')}
+        {card(
+          'Tasa de conversión',
+          `${leads.length ? Math.round((newLeads / leads.length) * 100) : 0}%`,
+          'text-green-600'
+        )}
+        {card('Clics en llamada', callClicks, 'text-blue-600')}
+        {card('Eventos hoy', eventsToday)}
+        {card('Páginas registradas', pageCount)}
+      </div>
+
+      <div className="bg-white rounded-xl shadow border border-gray-100 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <h2 className="font-semibold text-gray-900">Leads recientes</h2>
+          <a href="/admin/paginas" className="text-sm text-purple-600 hover:underline">
+            Ver estadísticas por página →
+          </a>
+        </div>
+        {leads.length === 0 ? (
+          <p className="text-gray-500 p-6">No hay leads todavía.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 text-gray-500">
+                <tr>
+                  <th className="text-left p-4 font-medium">Nombre</th>
+                  <th className="text-left p-4 font-medium">Email</th>
+                  <th className="text-left p-4 font-medium">Empresa</th>
+                  <th className="text-left p-4 font-medium">Origen</th>
+                  <th className="text-left p-4 font-medium">Mensaje</th>
+                  <th className="text-left p-4 font-medium">Fecha</th>
+                  <th className="text-left p-4 font-medium">Estado</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {leads.map((lead) => (
+                  <tr key={lead.id} className="hover:bg-gray-50">
+                    <td className="p-4 font-medium text-gray-900">{lead.name}</td>
+                    <td className="p-4 text-gray-600">{lead.email}</td>
+                    <td className="p-4 text-gray-600">{lead.company || '-'}</td>
+                    <td className="p-4 text-gray-600">{lead.source || 'sitio'}</td>
+                    <td className="p-4 text-gray-600 max-w-xs truncate">{lead.message}</td>
+                    <td className="p-4 text-gray-600">
+                      {lead.createdAt
+                        ? new Date(lead.createdAt.toDate()).toLocaleDateString('es-MX')
+                        : '—'}
+                    </td>
+                    <td className="p-4">
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          lead.status === 'new'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-gray-100 text-gray-600'
+                        }`}
+                      >
+                        {lead.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </AdminShell>
   );
 }

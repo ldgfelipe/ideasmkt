@@ -1,0 +1,191 @@
+---
+// Analítica propia para landings (/lp) y tarjetas digitales (/td).
+//
+// Registra visitas y clics en Firestore (colección `eventos`) usando la API
+// REST, sin cargar el SDK (~130 kB) ni usar cookies:
+//   · La sesión se identifica con sessionStorage (se borra al cerrar la pestaña).
+//   · No se guarda IP, ni huella digital, ni se rastrea entre sitios.
+//   · Se respeta Do Not Track y no se mide en localhost.
+// Los datos se ven en /admin/paginas.
+import { firebaseConfig } from '../lib/firebase-config';
+
+interface Props {
+  /** Clave en el catálogo `paginas/{pageId}`, p. ej. "lp-friganta". */
+  pageId: string;
+  /** Tipo de página: landing o tarjeta digital. */
+  tipo?: 'lp' | 'td';
+  /** Desactiva la medición (previsualizaciones). */
+  disabled?: boolean;
+}
+
+const { pageId, tipo = 'lp', disabled = false } = Astro.props;
+---
+
+{
+  !disabled && (
+    <div
+      id="imkt-analytics"
+      hidden
+      data-page-id={pageId}
+      data-tipo={tipo}
+      data-project={firebaseConfig.projectId}
+      data-key={firebaseConfig.apiKey}
+    />
+  )
+}
+
+<script is:inline>
+  (function () {
+    var config = document.getElementById('imkt-analytics');
+    if (!config) return;
+
+    // Nada desde el entorno de desarrollo.
+    var host = location.hostname;
+    if (!host || host === 'localhost' || host === '127.0.0.1') return;
+    // Y nada si el visitante pidió no ser medido.
+    if (navigator.doNotTrack === '1' || window.doNotTrack === '1') return;
+    try {
+      if (localStorage.getItem('imkt-no-track') === '1') return;
+    } catch (e) {}
+
+    var PAGE_ID = config.getAttribute('data-page-id');
+    var TIPO = config.getAttribute('data-tipo');
+    var ENDPOINT =
+      'https://firestore.googleapis.com/v1/projects/' +
+      config.getAttribute('data-project') +
+      '/databases/(default)/documents/eventos?key=' +
+      config.getAttribute('data-key');
+
+    // Identificador de sesión: sessionStorage, no una cookie.
+    var sid = 'anon';
+    try {
+      sid = sessionStorage.getItem('imkt-sid');
+      if (!sid) {
+        sid = Math.random().toString(36).slice(2) + Date.now().toString(36);
+        sessionStorage.setItem('imkt-sid', sid);
+      }
+    } catch (e) {}
+
+    function today() {
+      var d = new Date();
+      return (
+        d.getFullYear() +
+        '-' +
+        String(d.getMonth() + 1).padStart(2, '0') +
+        '-' +
+        String(d.getDate()).padStart(2, '0')
+      );
+    }
+
+    function device() {
+      var w = window.innerWidth;
+      return w < 640 ? 'movil' : w < 1024 ? 'tablet' : 'escritorio';
+    }
+
+    function referrerHost() {
+      if (!document.referrer) return '';
+      try {
+        var h = new URL(document.referrer).hostname;
+        return h === location.hostname ? '' : h.slice(0, 100);
+      } catch (e) {
+        return '';
+      }
+    }
+
+    var params = new URLSearchParams(location.search);
+    var utms = [];
+    ['utm_source', 'utm_medium', 'utm_campaign'].forEach(function (key) {
+      var value = params.get(key);
+      if (value) utms.push([key, value.slice(0, 80)]);
+    });
+
+    function send(event) {
+      var fields = {
+        type: { stringValue: event.type },
+        pageId: { stringValue: PAGE_ID },
+        tipo: { stringValue: TIPO },
+        path: { stringValue: location.pathname.slice(0, 200) },
+        sessionId: { stringValue: sid },
+        device: { stringValue: device() },
+        date: { stringValue: today() },
+        createdAt: { timestampValue: new Date().toISOString() }
+      };
+      if (event.kind) fields.kind = { stringValue: event.kind };
+      if (event.label) fields.label = { stringValue: event.label };
+      if (event.location) fields.location = { stringValue: event.location };
+      if (event.href) fields.href = { stringValue: event.href };
+      var referrer = referrerHost();
+      if (referrer) fields.referrer = { stringValue: referrer };
+      for (var i = 0; i < utms.length; i++) {
+        fields[utms[i][0]] = { stringValue: utms[i][1] };
+      }
+
+      fetch(ENDPOINT, {
+        method: 'POST',
+        keepalive: true,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fields: fields })
+      }).catch(function () {});
+    }
+
+    // ─── Visita: una por sesión y página ───────────────────────────────────
+    var viewKey = 'imkt-view:' + PAGE_ID;
+    try {
+      if (!sessionStorage.getItem(viewKey)) {
+        sessionStorage.setItem(viewKey, '1');
+        send({ type: 'page_view' });
+      }
+    } catch (e) {
+      send({ type: 'page_view' });
+    }
+
+    // ─── Clics: llamadas, correo, PDFs, WhatsApp, enlaces y botones ────────
+    document.addEventListener(
+      'click',
+      function (event) {
+        var start = event.target;
+        if (!start || !start.closest) return;
+
+        var el = start.closest('a[href], button, [data-track]');
+        if (!el) return;
+        if (el.closest('[data-no-track]')) return;
+
+        var href = el.getAttribute('href') || '';
+        if (href.charAt(0) === '#') return; // Anclas dentro de la misma página.
+
+        var kind = 'boton';
+        if (href.indexOf('tel:') === 0) kind = 'llamada';
+        else if (href.indexOf('mailto:') === 0) kind = 'correo';
+        else if (/\.pdf([?#]|$)/i.test(href)) kind = 'pdf';
+        else if (/wa\.me|whatsapp|wa\.link/i.test(href)) kind = 'whatsapp';
+        else if (href.indexOf('http') === 0) {
+          try {
+            kind =
+              new URL(href, location.href).hostname === location.hostname ? 'enlace' : 'externo';
+          } catch (e2) {
+            kind = 'externo';
+          }
+        } else if (href) {
+          kind = 'enlace';
+        }
+
+        var label = el.getAttribute('data-track-label') || el.getAttribute('aria-label') || '';
+        if (!label) {
+          label = (el.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 70);
+        }
+        if (!label) label = href.slice(0, 100) || el.tagName.toLowerCase();
+
+        var payload = {
+          type: kind === 'llamada' ? 'call_click' : 'click',
+          kind: kind,
+          label: label
+        };
+        var where = el.getAttribute('data-track-location');
+        if (where) payload.location = where;
+        if (href) payload.href = href.slice(0, 200);
+        send(payload);
+      },
+      true
+    );
+  })();
+</script>

@@ -3,6 +3,7 @@
 // IMPORTANTE: importar global.css o Tailwind no aplica ningún estilo.
 import '../../styles/global.css';
 import PriceCatalog from '../../components/zabdin/PriceCatalog';
+import Analytics from '../../components/Analytics.astro';
 
 const links = {
   agenda: 'https://wa.link/2rv9kq', // Agenda tu cita (WhatsApp)
@@ -471,6 +472,8 @@ const quienes = {
   </head>
 
   <body class="td-body m-0 antialiased">
+    <!-- Analítica propia: visita y clics (PDFs, agenda, redes) en Firestore -->
+    <Analytics pageId="td-zabdi-studio" tipo="td" />
     <!-- ═══════════════════════ VISTA: MENÚ INICIAL ═══════════════════════ -->
     <main
       data-view-panel="menu"
