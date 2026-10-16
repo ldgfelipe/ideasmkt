@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { auth, onAuthStateChanged, db } from '../lib/firebase';
 import { signOut } from 'firebase/auth';
-import { collection, query, orderBy, onSnapshot, type QuerySnapshot, type DocumentData } from 'firebase/firestore';
+import { collection, query, orderBy, where, onSnapshot, type QuerySnapshot, type DocumentData } from 'firebase/firestore';
 
 interface Lead {
   id: string;
@@ -16,6 +16,7 @@ interface Lead {
 export default function AdminDashboard() {
   const [user, setUser] = useState<any>(null);
   const [leads, setLeads] = useState<Lead[]>([]);
+  const [callClicks, setCallClicks] = useState(0);
   const [loading, setLoading] = useState(true);
   const [authChecked, setAuthChecked] = useState(false);
 
@@ -41,6 +42,16 @@ export default function AdminDashboard() {
         ...doc.data()
       })) as Lead[];
       setLeads(data);
+    });
+    return () => unsubscribe();
+  }, [user]);
+
+  // Clics en los botones de llamada (los escribe la landing de Friganta)
+  useEffect(() => {
+    if (!db || !user) return;
+    const q = query(collection(db, 'eventos'), where('type', '==', 'call_click'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setCallClicks(snapshot.size);
     });
     return () => unsubscribe();
   }, [user]);
@@ -96,7 +107,7 @@ export default function AdminDashboard() {
           </a>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-xl shadow p-6 border border-gray-100">
             <p className="text-gray-500 text-sm">Total de leads</p>
             <p className="text-3xl font-bold text-gray-900">{leads.length}</p>
@@ -110,6 +121,10 @@ export default function AdminDashboard() {
             <p className="text-3xl font-bold text-green-600">
               {leads.length ? Math.round((newLeads / leads.length) * 100) : 0}%
             </p>
+          </div>
+          <div className="bg-white rounded-xl shadow p-6 border border-gray-100">
+            <p className="text-gray-500 text-sm">Clics en llamada</p>
+            <p className="text-3xl font-bold text-blue-600">{callClicks}</p>
           </div>
         </div>
 

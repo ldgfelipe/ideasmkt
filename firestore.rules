@@ -9,6 +9,13 @@ service cloud.firestore {
       allow read, update, delete: if request.auth != null;
     }
 
+    // Eventos (p. ej. clics en los botones de llamada): se crean desde las
+    // landing públicas, solo los autenticados los pueden consultar.
+    match /eventos/{id} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
+
     // Posts del blog: lectura pública, escritura solo autenticados
     match /posts/{id} {
       allow read: if true;
