@@ -8,8 +8,16 @@ const links = {
   agenda: 'https://wa.link/2rv9kq', // Agenda tu cita (WhatsApp)
   ubicacion: 'https://www.google.com/maps/search/?api=1&query=Zabd%C3%ADn+Studio',
   facebook: 'https://www.facebook.com/zbstudiopuebla/',
-  instagram: 'https://www.instagram.com/zabdistudio_/'
+  instagram: 'https://www.instagram.com/zabdistudio_/',
+  // PDF originales (Firebase Storage). Se abren en ventana/pestaña nueva.
+  pdfQuienes:
+    'https://firebasestorage.googleapis.com/v0/b/ideasmkt-53500.firebasestorage.app/o/QUIENES%20SOMOS.pdf?alt=media&token=1d342aaf-fc06-4af1-ac3a-4b84092f9180',
+  pdfPrecios:
+    'https://firebasestorage.googleapis.com/v0/b/ideasmkt-53500.firebasestorage.app/o/LISTA%20DE%20PRECIOS%20RGB%202026.pdf?alt=media&token=780182d1-7860-4319-9fc7-66ecb7bc34dc'
 };
+
+// Icono (SVG) que acompaña a los enlaces "Ver PDF".
+const pdfIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6"/><path d="M9 18h4"/></svg>`;
 
 // Botones del menú inicial. `view` abre una vista; `href` navega.
 const menuItems = [
@@ -301,6 +309,46 @@ const quienes = {
         transform: translateX(-2px);
       }
 
+      /* Enlace-píldora "Ver PDF": abre el documento original en ventana nueva. */
+      .td-pdf {
+        display: inline-flex;
+        min-height: 48px;
+        align-items: center;
+        gap: 0.55rem;
+        border: 1px solid var(--zabdi-pink);
+        border-radius: 9999px;
+        background: var(--zabdi-pink);
+        padding: 0.7rem 1.4rem;
+        color: #fff;
+        font-family: 'Century Gothic', 'Questrial', ui-sans-serif, system-ui, sans-serif;
+        font-size: 1.05rem;
+        line-height: 1;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+      }
+
+      .td-pdf:hover {
+        background: #fff;
+        color: var(--zabdi-pink);
+        transform: translateY(-2px);
+      }
+
+      .td-pdf svg {
+        width: 1.15rem;
+        height: 1.15rem;
+        flex: none;
+      }
+
+      /* Dos acciones centradas (PDF + Volver al menú). */
+      .td-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+      }
+
       /* ────────────── Animación de entrada elegante ────────────── */
       .td-menu-inner {
         position: relative;
@@ -545,9 +593,21 @@ const quienes = {
         </div>
 
         <div class="td-quienes__foot">
-          <button type="button" class="td-back" data-back>
-            <span aria-hidden="true">←</span> Volver al menú
-          </button>
+          <div class="td-actions">
+            <a
+              class="td-pdf"
+              href={links.pdfQuienes}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Ver el PDF original de Quiénes Somos en una ventana nueva"
+            >
+              <Fragment set:html={pdfIcon} />
+              <span>Ver PDF</span>
+            </a>
+            <button type="button" class="td-back" data-back>
+              <span aria-hidden="true">←</span> Volver al menú
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -585,11 +645,34 @@ const quienes = {
             Busca el servicio que necesitas o filtra por categoría. Encuentra tu
             tratamiento ideal en segundos.
           </p>
+
+          <div class="td-actions mt-5">
+            <a
+              class="td-pdf"
+              href={links.pdfPrecios}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Ver la lista de precios completa en PDF (se abre en una ventana nueva)"
+            >
+              <Fragment set:html={pdfIcon} />
+              <span>Ver PDF</span>
+            </a>
+          </div>
         </header>
 
         <PriceCatalog client:load />
 
-        <div class="mt-12 flex justify-center">
+        <div class="td-actions mt-12">
+          <a
+            class="td-pdf"
+            href={links.pdfPrecios}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Ver la lista de precios completa en PDF (se abre en una ventana nueva)"
+          >
+            <Fragment set:html={pdfIcon} />
+            <span>Ver PDF</span>
+          </a>
           <button type="button" class="td-back" data-back>
             <span aria-hidden="true">←</span> Volver al menú
           </button>
