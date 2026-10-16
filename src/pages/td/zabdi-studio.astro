@@ -19,10 +19,11 @@ const links = {
 // Icono (SVG) que acompaña a los enlaces "Ver PDF".
 const pdfIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6"/><path d="M9 18h4"/></svg>`;
 
-// Botones del menú inicial. `view` abre una vista; `href` navega.
+// Botones del menú inicial: `href` navega; "Quiénes Somos" y "Catálogo"
+// abren directamente el PDF original en una pestaña nueva.
 const menuItems = [
-  { label: 'Quiénes Somos', view: 'quienes' },
-  { label: 'Catálogo', view: 'catalogo' },
+  { label: 'Quiénes Somos', href: links.pdfQuienes, external: true },
+  { label: 'Catálogo', href: links.pdfPrecios, external: true },
   { label: 'Agenda tu cita', href: links.agenda, external: true },
   { label: 'Ubicación', href: links.ubicacion, external: true }
 ];
@@ -502,26 +503,15 @@ const quienes = {
           {
             menuItems.map((item, i) => (
               <div class="reveal flex w-full justify-center" style={`--d:${820 + i * 160}ms`}>
-                {item.view ? (
-                  <button
-                    type="button"
-                    class="td-btn"
-                    data-view={item.view}
-                    aria-label={item.label}
-                  >
-                    <span class="td-btn-label">{item.label}</span>
-                  </button>
-                ) : (
-                  <a
-                    class="td-btn"
-                    href={item.href}
-                    target={item.external ? '_blank' : undefined}
-                    rel={item.external ? 'noopener noreferrer' : undefined}
-                    aria-label={item.label}
-                  >
-                    <span class="td-btn-label">{item.label}</span>
-                  </a>
-                )}
+                <a
+                  class="td-btn"
+                  href={item.href}
+                  target={item.external ? '_blank' : undefined}
+                  rel={item.external ? 'noopener noreferrer' : undefined}
+                  aria-label={item.label}
+                >
+                  <span class="td-btn-label">{item.label}</span>
+                </a>
               </div>
             ))
           }
@@ -734,26 +724,14 @@ const quienes = {
         history.replaceState({ view: currentView(), fromCard: false }, '');
         render();
 
-        // Abrir Catálogo / Quiénes Somos crea una entrada nueva en el historial,
-        // así el botón "atrás" del teléfono vuelve al menú de la tarjeta (no a
-        // la página anterior).
-        document.querySelectorAll('[data-view]').forEach(function (el) {
-          el.addEventListener('click', function () {
-            var view = el.getAttribute('data-view');
-            history.pushState({ view: view, fromCard: true }, '', '#' + view);
-            render();
-          });
-        });
-
-        // "Volver al menú": usa el historial si venimos del menú de la tarjeta.
+        // Nota: el menú abre los PDFs en pestaña nueva, así que ya no hay botones
+        // [data-view]. Las vistas siguen siendo navegables por hash (#quienes /
+        // #catalogo) y se cambian aquí al cambiar la URL.
+        // "Volver al menú" dentro de esas vistas: limpia el hash.
         document.querySelectorAll('[data-back]').forEach(function (el) {
           el.addEventListener('click', function () {
-            if (history.state && history.state.fromCard) {
-              history.back();
-            } else {
-              location.hash = '';
-              render();
-            }
+            location.hash = '';
+            render();
           });
         });
 
