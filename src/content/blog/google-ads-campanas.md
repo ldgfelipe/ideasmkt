@@ -5,6 +5,10 @@ pubDate: 2026-02-01
 author: 'Carlos Ruiz'
 tags: ['PPC', 'Google Ads', 'Publicidad']
 readingTime: '6 min'
+cover: '/blog/google-ads-campanas.webp'
+coverAlt: 'Portátil con un panel de Google Analytics mostrando gráficos de rendimiento en un escritorio'
+coverCredit: 'Imagen: Pexels'
+ogImage: '/blog/og-google-ads-campanas.jpg'
 ---
 
 # Cómo Crear Campañas de Google Ads Rentables

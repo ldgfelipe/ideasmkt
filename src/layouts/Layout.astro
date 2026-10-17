@@ -6,12 +6,51 @@ import Footer from '../components/Footer.astro';
 interface Props {
   title?: string;
   description?: string;
+  /** Ruta o URL de la imagen para redes sociales (Open Graph). */
+  image?: string;
+  type?: 'website' | 'article';
+  publishedTime?: string;
+  author?: string;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
   title = 'IdeasMKT - Agencia de Marketing Digital',
-  description = 'Estrategias de marketing digital que impulsan tu negocio al siguiente nivel. SEO, publicidad pagada, redes sociales y más.'
+  description = 'Estrategias de marketing digital que impulsan tu negocio al siguiente nivel. SEO, publicidad pagada, redes sociales y más.',
+  image = '/og-default.jpg',
+  type = 'website',
+  publishedTime,
+  author,
+  noindex = false,
+  jsonLd
 } = Astro.props;
+
+const site = Astro.site ?? new URL('https://ideasmkt.web.app');
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogImage = new URL(image, site).href;
+
+const siteSchema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'IdeasMKT',
+    url: site.href,
+    logo: new URL('/og-default.jpg', site).href,
+    email: 'ldgframe@gmail.com',
+    description:
+      'Agencia de marketing digital especializada en SEO, publicidad pagada, redes sociales, email marketing y desarrollo web y de sistemas a la medida.'
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'IdeasMKT',
+    url: site.href,
+    inLanguage: 'es'
+  }
+];
+
+const schemas = jsonLd ? [...siteSchema, ...(Array.isArray(jsonLd) ? jsonLd : [jsonLd])] : siteSchema;
 ---
 
 <!doctype html>
@@ -22,7 +61,29 @@ const {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#7c3aed" />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
     <title>{title}</title>
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content="IdeasMKT" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {author && <meta property="article:author" content={author} />}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -30,6 +91,12 @@ const {
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+
+    {
+      schemas.map((schema) => (
+        <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+      ))
+    }
   </head>
   <body class="font-inter bg-white text-gray-900 antialiased">
     <Header />

@@ -9,6 +9,9 @@ export interface BlogPost {
   tags: string[];
   readingTime: string;
   cover?: string;
+  coverAlt?: string;
+  coverCredit?: string;
+  ogImage?: string;
   body?: string;
 }
 
@@ -25,6 +28,9 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
         tags: post.data.tags,
         readingTime: post.data.readingTime,
         cover: post.data.cover,
+        coverAlt: post.data.coverAlt,
+        coverCredit: post.data.coverCredit,
+        ogImage: post.data.ogImage,
         body: post.body
       }))
       .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());

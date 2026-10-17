@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Admin panel and login should not be indexed.
+Disallow: /admin
+Disallow: /login
+
+Sitemap: https://ideasmkt.web.app/sitemap-index.xml

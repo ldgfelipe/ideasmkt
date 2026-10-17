@@ -1,6 +1,8 @@
 ---
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import { getBlogPosts } from '../../lib/blog';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -21,18 +23,84 @@ const dateFormatter = new Intl.DateTimeFormat('es-ES', {
   month: 'long',
   day: 'numeric'
 });
+
+const site = Astro.site ?? new URL('https://ideasmkt.web.app');
+const postUrl = new URL(Astro.url.pathname, site).href;
+const imageUrl = new URL(post.data.ogImage ?? post.data.cover ?? '/og-default.jpg', site).href;
+const publishedISO = post.data.pubDate.toISOString();
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: new URL('/', site).href },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: new URL('/blog', site).href },
+      { '@type': 'ListItem', position: 3, name: post.data.title, item: postUrl }
+    ]
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.data.title,
+    description: post.data.description,
+    image: [imageUrl],
+    datePublished: publishedISO,
+    dateModified: publishedISO,
+    inLanguage: 'es',
+    keywords: post.data.tags.join(', '),
+    articleSection: post.data.tags[0],
+    author: { '@type': 'Person', name: post.data.author },
+    publisher: {
+      '@type': 'Organization',
+      name: 'IdeasMKT',
+      logo: { '@type': 'ImageObject', url: new URL('/favicon.svg', site).href }
+    },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl }
+  }
+];
+
+// Enlazado interno: otros artículos del blog.
+const related = (await getBlogPosts()).filter((p) => p.slug !== post.id).slice(0, 3);
 ---
 
-<Layout title={`${post.data.title} - IdeasMKT`} description={post.data.description}>
+<Layout
+  title={`${post.data.title} - IdeasMKT`}
+  description={post.data.description}
+  image={post.data.ogImage ?? post.data.cover}
+  type="article"
+  publishedTime={publishedISO}
+  author={post.data.author}
+  jsonLd={jsonLd}
+>
   <article class="py-20">
     <div class="container mx-auto px-4 lg:px-8 max-w-3xl">
       <a href="/blog" class="text-purple-600 hover:underline text-sm mb-8 inline-block">
         ← Volver al blog
       </a>
 
-      <div class="aspect-video bg-gradient-to-br from-purple-400 to-blue-500 rounded-xl mb-8 flex items-center justify-center">
-        <span class="text-6xl">📝</span>
-      </div>
+      {post.data.cover ? (
+        <figure class="mb-8">
+          <img
+            src={post.data.cover}
+            alt={post.data.coverAlt || post.data.title}
+            width="1600"
+            height="900"
+            fetchpriority="high"
+            decoding="async"
+            class="aspect-video w-full object-cover rounded-xl"
+          />
+          {post.data.coverCredit && (
+            <figcaption class="mt-2 text-xs text-gray-400 text-right">
+              {post.data.coverCredit}
+            </figcaption>
+          )}
+        </figure>
+      ) : (
+        <div class="aspect-video bg-gradient-to-br from-purple-400 to-blue-500 rounded-xl mb-8 flex items-center justify-center">
+          <span class="text-6xl">📝</span>
+        </div>
+      )}
 
       <div class="flex flex-wrap gap-2 mb-4">
         {post.data.tags.map((tag) => (
@@ -55,6 +123,27 @@ const dateFormatter = new Intl.DateTimeFormat('es-ES', {
       <div class="prose prose-lg max-w-none">
         <Content />
       </div>
+
+      <div class="mt-12 p-6 bg-purple-50 border border-purple-100 rounded-xl text-center">
+        <h2 class="text-xl font-bold text-gray-900 mb-2">¿Quieres aplicar esto en tu negocio?</h2>
+        <p class="text-gray-600 mb-4">
+          Cuéntanos tu caso y te preparamos una estrategia a la medida.
+        </p>
+        <a href="/contact" class="btn-primary inline-block">Hablemos de tu proyecto</a>
+      </div>
     </div>
   </article>
+
+  {related.length > 0 && (
+    <section class="pb-20">
+      <div class="container mx-auto px-4 lg:px-8 max-w-5xl">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Sigue leyendo</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {related.map((post) => (
+            <BlogCard post={post} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
 </Layout>
