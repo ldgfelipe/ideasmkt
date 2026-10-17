@@ -24,7 +24,9 @@ export const FOOTER_LINKS = [
       { href: '/services#seo', label: 'SEO' },
       { href: '/services#ppc', label: 'Publicidad Pagada' },
       { href: '/services#social', label: 'Redes Sociales' },
-      { href: '/services#content', label: 'Contenido' }
+      { href: '/services#content', label: 'Contenido' },
+      { href: '/services#email', label: 'Email Marketing' },
+      { href: '/services#software', label: 'Sistemas a la medida' }
     ]
   },
   {
@@ -98,5 +100,23 @@ export const SERVICES = [
       'Desarrollamos contenido que conecta con tu audiencia y genera conversión.',
     icon: '✍️',
     features: ['Copywriting', 'Video', 'Infografías', 'E-books']
+  },
+  {
+    id: 'email',
+    title: 'Email Marketing',
+    subtitle: 'Campañas que llegan a la bandeja correcta',
+    description:
+      'Diseñamos estrategias de email marketing con segmentación y automatizaciones para nutrir a tus contactos y convertir más.',
+    icon: '✉️',
+    features: ['Newsletters', 'Automatizaciones', 'Segmentación', 'A/B testing']
+  },
+  {
+    id: 'software',
+    title: 'Programación de sistemas a la medida',
+    subtitle: 'Software hecho para tu operación',
+    description:
+      'Desarrollamos sistemas y aplicaciones a la medida: paneles de administración, integraciones, bases de datos y automatizaciones.',
+    icon: '💻',
+    features: ['Aplicaciones web', 'Paneles y reportes', 'Integraciones y APIs', 'Bases de datos']
   }
 ];
