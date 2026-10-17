@@ -31,10 +31,15 @@ export default function ContactForm() {
     setStatus({ submitting: true, success: false, error: null });
 
     try {
-      await addDoc(collection(db!, 'leads'), {
-        ...formData,
-        createdAt: serverTimestamp() as Timestamp,
-        status: 'new'
+      await addDoc(collection(db!, 'mensajes'), {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        company: formData.company.trim(),
+        message: formData.message.trim(),
+        // Distingue los mensajes del formulario general de los leads de campañas.
+        source: 'contacto',
+        status: 'nuevo',
+        createdAt: serverTimestamp() as Timestamp
       });
       setStatus({ submitting: false, success: true, error: null });
       setFormData({ name: '', email: '', company: '', message: '' });

@@ -26,6 +26,22 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
+    // ───────────────────────────── Mensajes ───────────────────────────────
+    // Formulario de /contact. El público crea; solo los administradores leen,
+    // marcan como leído/respondido o borran. Se validan los campos mínimos.
+    match /mensajes/{id} {
+      allow create: if request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 200
+        && request.resource.data.email is string
+        && request.resource.data.email.size() > 0
+        && request.resource.data.email.size() <= 200
+        && request.resource.data.message is string
+        && request.resource.data.message.size() > 0
+        && request.resource.data.message.size() <= 5000;
+      allow read, update, delete: if isAdmin();
+    }
+
     // ────────────────────────────── Eventos ───────────────────────────────
     // Analítica de las landings (/lp) y tarjetas digitales (/td): visitas y
     // clics. Se crean desde el navegador del visitante, así que se validan

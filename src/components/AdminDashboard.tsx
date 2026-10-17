@@ -36,6 +36,7 @@ const isoToday = () => {
 export default function AdminDashboard() {
   const session: Session = useSession();
   const [leads, setLeads] = useState<Lead[]>([]);
+  const [newMessages, setNewMessages] = useState(0);
   const [callClicks, setCallClicks] = useState(0);
   const [eventsToday, setEventsToday] = useState(0);
   const [pageCount, setPageCount] = useState(0);
@@ -55,6 +56,11 @@ export default function AdminDashboard() {
       (snapshot) => setCallClicks(snapshot.size)
     );
 
+    const unsubscribeMessages = onSnapshot(
+      query(collection(db, 'mensajes'), where('status', '==', 'nuevo')),
+      (snapshot) => setNewMessages(snapshot.size)
+    );
+
     getCountFromServer(query(collection(db, 'eventos'), where('date', '==', isoToday())))
       .then((snapshot) => setEventsToday(snapshot.data().count))
       .catch((error) => console.error('No se pudo contar los eventos de hoy:', error));
@@ -66,6 +72,7 @@ export default function AdminDashboard() {
     return () => {
       unsubscribeLeads();
       unsubscribeCalls();
+      unsubscribeMessages();
     };
   }, [session.isAdmin]);
 
@@ -89,6 +96,7 @@ export default function AdminDashboard() {
           'text-green-600'
         )}
         {card('Clics en llamada', callClicks, 'text-blue-600')}
+        {card('Mensajes nuevos', newMessages, 'text-amber-600')}
         {card('Eventos hoy', eventsToday)}
         {card('Páginas registradas', pageCount)}
       </div>

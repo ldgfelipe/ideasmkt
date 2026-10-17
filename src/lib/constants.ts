@@ -4,8 +4,10 @@ export const COMPANY_INFO = {
   name: 'IdeasMKT',
   description:
     'Agencia de marketing digital especializada en transformar negocios a través de estrategias basadas en datos y tecnología.',
-  email: 'hola@ideasmkt.web.app',
-  phone: '+34 910 000 000'
+  email: 'ldgframe@gmail.com',
+  // Número de contacto/WhatsApp en formato internacional sin «+» (para wa.me).
+  whatsapp: '522227328662',
+  phone: '+52 222 732 8662'
 };
 
 export const NAV_LINKS = [

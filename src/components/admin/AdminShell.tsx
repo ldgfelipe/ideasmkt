@@ -8,6 +8,7 @@ import type { Session } from '../../lib/session';
 const TABS = [
   { href: '/admin', label: 'Resumen' },
   { href: '/admin/paginas', label: 'Páginas y estadísticas' },
+  { href: '/admin/mensajes', label: 'Mensajes' },
   { href: '/admin/usuarios', label: 'Usuarios' },
   { href: '/admin/blog', label: 'Blog' }
 ];
