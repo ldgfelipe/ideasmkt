@@ -26,7 +26,8 @@ export const FOOTER_LINKS = [
       { href: '/services#social', label: 'Redes Sociales' },
       { href: '/services#content', label: 'Contenido' },
       { href: '/services#email', label: 'Email Marketing' },
-      { href: '/services#software', label: 'Sistemas a la medida' }
+      { href: '/services#software', label: 'Sistemas a la medida' },
+      { href: '/services#web', label: 'Páginas Web' }
     ]
   },
   {
@@ -118,5 +119,14 @@ export const SERVICES = [
       'Desarrollamos sistemas y aplicaciones a la medida: paneles de administración, integraciones, bases de datos y automatizaciones.',
     icon: '💻',
     features: ['Aplicaciones web', 'Paneles y reportes', 'Integraciones y APIs', 'Bases de datos']
+  },
+  {
+    id: 'web',
+    title: 'Realización de páginas web',
+    subtitle: 'Diseño y desarrollo a medida',
+    description:
+      'Creamos páginas web y landing pages rápidas, responsivas y optimizadas para convertir visitantes en clientes.',
+    icon: '🌐',
+    features: ['Diseño responsivo', 'Landing pages', 'Optimización de velocidad', 'Dominio y hosting']
   }
 ];
