@@ -1,0 +1,101 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { COMPANY_INFO, SERVICES } from '../lib/constants';
+
+const serviceList = SERVICES.map((s) => s.title).join(', ');
+
+const faqs = [
+  {
+    q: '¿Qué servicios ofrece IdeasMKT?',
+    a: `IdeasMKT es una agencia de marketing digital. Ofrecemos ${serviceList}. Trabajamos estrategias basadas en datos para atraer clientes y aumentar las ventas de tu negocio.`
+  },
+  {
+    q: '¿Trabajan con negocios pequeños y medianos?',
+    a: 'Sí. Atendemos desde emprendimientos y negocios locales hasta empresas consolidadas. Adaptamos el plan, el presupuesto y las acciones al tamaño y a los objetivos de cada negocio.'
+  },
+  {
+    q: '¿Cómo empiezo a trabajar con IdeasMKT?',
+    a: 'Escríbenos por WhatsApp o mediante el formulario de contacto. Hacemos una consulta inicial sin costo para entender tu negocio y tus objetivos, después preparamos un diagnóstico y una propuesta con alcance y precio.'
+  },
+  {
+    q: '¿Cuánto cuesta contratar sus servicios?',
+    a: 'El precio depende del alcance del proyecto y de los canales que quieras trabajar. Después del diagnóstico inicial te entregamos una propuesta a la medida, sin costos ocultos.'
+  },
+  {
+    q: '¿En cuánto tiempo se ven resultados?',
+    a: 'Con publicidad pagada (Google Ads y Meta Ads) los primeros resultados suelen verse en semanas. Con SEO y estrategias de contenido los resultados se consolidan entre 3 y 6 meses, porque dependen del posicionamiento orgánico.'
+  },
+  {
+    q: '¿Atienden clientes fuera de su ciudad?',
+    a: 'Sí. Trabajamos de forma remota con clientes en México y Latinoamérica, con reuniones en línea y seguimiento constante por WhatsApp, correo y videollamada.'
+  },
+  {
+    q: '¿También crean páginas web y sistemas a la medida?',
+    a: 'Sí. Diseñamos y desarrollamos páginas web, landing pages y sistemas a la medida (paneles de administración, integraciones y bases de datos), además de la parte de marketing.'
+  },
+  {
+    q: '¿Cómo protegen mis datos?',
+    a: 'Usamos tus datos únicamente para atender tu solicitud y dar seguimiento comercial. Puedes consultar los detalles en nuestro aviso de privacidad.'
+  }
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+};
+
+---
+
+<Layout
+  title="Preguntas frecuentes - IdeasMKT"
+  description="Respuestas a las dudas más comunes sobre los servicios de IdeasMKT: precios, tiempos de resultados, proceso de trabajo, páginas web y sistemas a la medida."
+  jsonLd={jsonLd}
+>
+  <section class="py-20 bg-gradient-to-br from-purple-50 via-white to-blue-50">
+    <div class="container mx-auto px-4 lg:px-8">
+      <div class="max-w-3xl mx-auto text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Preguntas frecuentes</h1>
+        <p class="text-gray-600">
+          Todo lo que suelen preguntarnos antes de empezar. Si te queda alguna duda, escríbenos.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4 lg:px-8 max-w-3xl">
+      <div class="space-y-4">
+        {faqs.map((faq) => (
+          <details class="group border border-gray-200 rounded-xl p-5 open:shadow-md transition-shadow">
+            <summary class="flex items-center justify-between cursor-pointer list-none font-semibold text-gray-900">
+              <h2 class="text-lg pr-4">{faq.q}</h2>
+              <span class="text-purple-600 text-2xl leading-none group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="text-gray-600 mt-3">{faq.a}</p>
+          </details>
+        ))}
+      </div>
+
+      <div class="mt-12 p-6 bg-purple-50 border border-purple-100 rounded-xl text-center">
+        <h2 class="text-xl font-bold text-gray-900 mb-2">¿No encuentras tu respuesta?</h2>
+        <p class="text-gray-600 mb-4">Cuéntanos tu caso y te respondemos sin compromiso.</p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+          <a
+            href={`https://wa.me/${COMPANY_INFO.whatsapp}?text=${encodeURIComponent('Hola IdeasMKT, tengo una duda.')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-primary inline-block"
+          >
+            Escríbenos por WhatsApp
+          </a>
+          <a href="/contact" class="btn-outline inline-block">Ir al formulario</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

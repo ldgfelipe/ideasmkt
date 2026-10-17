@@ -1,7 +1,90 @@
+# Buscadores y asistentes de IA: todos son bienvenidos.
+# Resumen del sitio para IA: /llms.txt  (completo: /llms-full.txt)
+
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /login
 
-# Admin panel and login should not be indexed.
+# --- Asistentes y buscadores con IA (permitidos explícitamente) ---
+
+User-agent: GPTBot
+Allow: /
+Disallow: /admin
+Disallow: /login
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /admin
+Disallow: /login
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /admin
+Disallow: /login
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin
+Disallow: /login
+
+User-agent: Perplexity-User
+Allow: /
+Disallow: /admin
+Disallow: /login
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin
+Disallow: /login
+
+User-agent: Claude-User
+Allow: /
+Disallow: /admin
+Disallow: /login
+
+User-agent: Claude-SearchBot
+Allow: /
+Disallow: /admin
+Disallow: /login
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /admin
+Disallow: /login
+
+User-agent: Applebot
+Allow: /
+Disallow: /admin
+Disallow: /login
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /admin
+Disallow: /login
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+Disallow: /login
+
+User-agent: DuckDuckBot
+Allow: /
+Disallow: /admin
+Disallow: /login
+
+User-agent: Amazonbot
+Allow: /
+Disallow: /admin
+Disallow: /login
+
+User-agent: meta-externalagent
+Allow: /
+Disallow: /admin
+Disallow: /login
+
+User-agent: cohere-ai
+Allow: /
 Disallow: /admin
 Disallow: /login
 

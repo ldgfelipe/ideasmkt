@@ -33,9 +33,9 @@ export const FOOTER_LINKS = [
   {
     title: 'Empresa',
     links: [
-      { href: '/about', label: 'Acerca de' },
-      { href: '/contact', label: 'Contacto' },
-      { href: '/careers', label: 'Carreras' }
+      { href: '/blog', label: 'Blog' },
+      { href: '/faq', label: 'Preguntas frecuentes' },
+      { href: '/contact', label: 'Contacto' }
     ]
   },
   {
