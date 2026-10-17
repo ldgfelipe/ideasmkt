@@ -190,7 +190,7 @@ export default function PdfViewer() {
       className="fixed inset-0 z-[100] flex flex-col bg-[#f4f2f0]"
     >
       <header className="flex items-center gap-3 border-b border-[#e4ded8] bg-white px-3 py-3 sm:px-6">
-        <button type="button" className="td-back shrink-0" onClick={() => cerrar()}>
+        <button type="button" className="td-back shrink-0" onClick={() => cerrar()} data-no-track>
           <span aria-hidden="true">←</span> Volver al menú
         </button>
         <p className="td-display min-w-0 flex-1 truncate text-center text-[1.05rem] font-bold text-[#7b5b46]">
@@ -224,7 +224,7 @@ export default function PdfViewer() {
               >
                 Abrir el PDF
               </a>
-              <button type="button" className="td-back" onClick={() => cerrar()}>
+              <button type="button" className="td-back" onClick={() => cerrar()} data-no-track>
                 <span aria-hidden="true">←</span> Volver al menú
               </button>
             </div>
@@ -236,7 +236,7 @@ export default function PdfViewer() {
 
             {terminado && (
               <div className="td-actions mt-8 mb-2">
-                <button type="button" className="td-back" onClick={() => cerrar()}>
+                <button type="button" className="td-back" onClick={() => cerrar()} data-no-track>
                   <span aria-hidden="true">←</span> Volver al menú
                 </button>
                 <a
