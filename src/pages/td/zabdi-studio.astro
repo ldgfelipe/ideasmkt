@@ -3,6 +3,7 @@
 // IMPORTANTE: importar global.css o Tailwind no aplica ningún estilo.
 import '../../styles/global.css';
 import PriceCatalog from '../../components/zabdin/PriceCatalog';
+import PdfViewer from '../../components/zabdin/PdfViewer';
 import Analytics from '../../components/Analytics.astro';
 
 const links = {
@@ -10,7 +11,9 @@ const links = {
   ubicacion: 'https://www.google.com/maps/search/?api=1&query=Zabd%C3%ADn+Studio',
   facebook: 'https://www.facebook.com/zbstudiopuebla/',
   instagram: 'https://www.instagram.com/zabdistudio_/',
-  // PDF originales (Firebase Storage). Se abren en ventana/pestaña nueva.
+  // PDF originales (Firebase Storage). Los muestra <PdfViewer /> dentro de la
+  // propia tarjeta; el enlace original queda como respaldo por si alguien
+  // quiere abrirlo en otra pestaña o el JavaScript no está disponible.
   pdfQuienes:
     'https://firebasestorage.googleapis.com/v0/b/ideasmkt-53500.firebasestorage.app/o/QUIENES%20SOMOS.pdf?alt=media&token=1d342aaf-fc06-4af1-ac3a-4b84092f9180',
   pdfPrecios:
@@ -20,11 +23,12 @@ const links = {
 // Icono (SVG) que acompaña a los enlaces "Ver PDF".
 const pdfIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6"/><path d="M9 18h4"/></svg>`;
 
-// Botones del menú inicial: `href` navega; "Quiénes Somos" y "Catálogo"
-// abren directamente el PDF original en una pestaña nueva.
+// Botones del menú inicial: "Quiénes Somos" y "Catálogo" muestran su PDF
+// dentro de la tarjeta (sin salir de la página); el resto navega fuera.
+// `pdf` marca los que abre el visor y con qué título se anuncian.
 const menuItems = [
-  { label: 'Quiénes Somos', href: links.pdfQuienes, external: true },
-  { label: 'Catálogo', href: links.pdfPrecios, external: true },
+  { label: 'Quiénes Somos', href: links.pdfQuienes, external: true, pdf: 'Quiénes Somos' },
+  { label: 'Catálogo', href: links.pdfPrecios, external: true, pdf: 'Lista de Precios 2026' },
   { label: 'Agenda tu cita', href: links.agenda, external: true },
   { label: 'Ubicación', href: links.ubicacion, external: true }
 ];
@@ -511,7 +515,12 @@ const quienes = {
                   href={item.href}
                   target={item.external ? '_blank' : undefined}
                   rel={item.external ? 'noopener noreferrer' : undefined}
-                  aria-label={item.label}
+                  aria-label={
+                    item.pdf ? `${item.label} (se abre dentro de esta página)` : item.label
+                  }
+                  data-pdf-viewer={item.pdf ? '' : undefined}
+                  data-pdf-title={item.pdf}
+                  data-track-label={item.pdf ? `Ver PDF · ${item.pdf}` : undefined}
                 >
                   <span class="td-btn-label">{item.label}</span>
                 </a>
@@ -592,7 +601,10 @@ const quienes = {
               href={links.pdfQuienes}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Ver el PDF original de Quiénes Somos en una ventana nueva"
+              aria-label="Ver el PDF original de Quiénes Somos dentro de esta página"
+              data-pdf-viewer
+              data-pdf-title="Quiénes Somos"
+              data-track-label="Ver PDF · Quiénes Somos"
             >
               <Fragment set:html={pdfIcon} />
               <span>Ver PDF</span>
@@ -645,7 +657,10 @@ const quienes = {
               href={links.pdfPrecios}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Ver la lista de precios completa en PDF (se abre en una ventana nueva)"
+              aria-label="Ver la lista de precios completa en PDF (se abre dentro de esta página)"
+              data-pdf-viewer
+              data-pdf-title="Lista de Precios 2026"
+              data-track-label="Ver PDF · Lista de Precios 2026"
             >
               <Fragment set:html={pdfIcon} />
               <span>Ver PDF</span>
@@ -661,7 +676,10 @@ const quienes = {
             href={links.pdfPrecios}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Ver la lista de precios completa en PDF (se abre en una ventana nueva)"
+            aria-label="Ver la lista de precios completa en PDF (se abre dentro de esta página)"
+            data-pdf-viewer
+            data-pdf-title="Lista de Precios 2026"
+            data-track-label="Ver PDF · Lista de Precios 2026"
           >
             <Fragment set:html={pdfIcon} />
             <span>Ver PDF</span>
@@ -672,6 +690,10 @@ const quienes = {
         </div>
       </div>
     </section>
+
+    <!-- Visor de PDF: muestra los documentos dentro de la tarjeta, sin salir
+         de la página. Se carga solo cuando alguien abre un PDF. -->
+    <PdfViewer client:load />
 
     <script is:inline>
       (function () {
@@ -727,9 +749,10 @@ const quienes = {
         history.replaceState({ view: currentView(), fromCard: false }, '');
         render();
 
-        // Nota: el menú abre los PDFs en pestaña nueva, así que ya no hay botones
-        // [data-view]. Las vistas siguen siendo navegables por hash (#quienes /
-        // #catalogo) y se cambian aquí al cambiar la URL.
+        // Nota: el menú muestra los PDFs dentro de la tarjeta (los abre el
+        // visor <PdfViewer />), así que ya no hay botones [data-view]. Las
+        // vistas siguen siendo navegables por hash (#quienes / #catalogo) y se
+        // cambian aquí al cambiar la URL.
         // "Volver al menú" dentro de esas vistas: limpia el hash.
         document.querySelectorAll('[data-back]').forEach(function (el) {
           el.addEventListener('click', function () {

@@ -1,6 +1,6 @@
 # Notas de desarrollo — Tarjeta Digital Zabdín Studio
 
-Última sesión: 20/ago/2026
+Última sesión: 17/oct/2026
 
 ## Estado actual (`src/pages/td/zabdi-studio.astro`)
 
@@ -14,6 +14,13 @@
 - Tagline: imagen `donde-comienza.webp` bajo el logo.
 - 4 botones píldora (solo imágenes, sin fondo): quienes somos, catálogo, agenda tu cita, ubicación.
 - Footer: Facebook + Instagram + WhatsApp (`whatsapp.svg` creado nuevo).
+- Los PDF (Quiénes Somos y Lista de Precios) se muestran DENTRO de la tarjeta con
+  `src/components/zabdin/PdfViewer.tsx` (React, `client:load`): capa a pantalla completa con botón
+  "Volver al menú"; el botón "atrás" del teléfono también lo cierra y devuelve el punto de lectura.
+  Los `href` originales de Firebase Storage se conservan (respaldo sin JavaScript y "abrir en otra
+  pestaña"). Para marcar un enlace como PDF: `data-pdf-viewer` + `data-pdf-title` + `data-track-label`.
+- `pdfjs-dist` (build `legacy`, más compatible con móviles viejos) se carga con `import()` diferido:
+  los ~1.7 MB del motor y su worker solo se descargan cuando alguien abre un PDF.
 
 ## Pendientes
 
@@ -23,6 +30,18 @@
 - Seguir comparando contra la imagen de referencia y ajustar detalles visuales.
 
 ## Hallazgos importantes (no repetir)
+
+- CRÍTICO para el visor de PDF: el bucket `ideasmkt-53500.firebasestorage.app` tiene CORS propio
+  (antes estaba vacío). `pdf.js` lee el PDF con `fetch`, así que sin esa configuración el navegador
+  bloquea la lectura. Orígenes permitidos: `https://ideasmkt.web.app`, `https://ideasmkt-53500.web.app`,
+  `https://ideasmkt-53500.firebaseapp.com`, `http://localhost:*`, `http://127.0.0.1:*`; método `GET, HEAD`;
+  cabeceras expuestas `Content-Type, Content-Length, Content-Range, Accept-Ranges`. Se aplica con la API
+  de GCS: `PATCH https://storage.googleapis.com/storage/v1/b/<bucket>?fields=cors`.
+- El navegador de pruebas de OpenCode (ventana oculta, `document.hidden === true`) NO puede dibujar con
+  pdf.js: el `render()` se queda colgado para siempre (probado con los bytes en memoria y sin worker).
+  Para verificar de verdad: Chrome real sin interfaz + CDP
+  (`chrome.exe --headless=new --disable-gpu --remote-debugging-port=9333`, abrir el target con
+  `PUT /json/new?<url>`, y `Runtime.evaluate` con `awaitPromise`). En móvil simulado (`Emulation.setDeviceMetricsOverride`).
 
 - `logo-zabdin.webp` original y `page-1-hi.png` eran la hoja informativa completa del PDF (1720x1282), NO un logo. El logo bueno es `logo-zabdin-1.png`.
 - El fondo extraído del PDF no incluye las barras grises ni botones (eran vectoriales).
