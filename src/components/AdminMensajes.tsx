@@ -12,6 +12,7 @@ interface Mensaje {
   name?: string;
   email?: string;
   company?: string;
+  service?: string;
   message?: string;
   source?: string;
   status?: string;
@@ -83,7 +84,7 @@ export default function AdminMensajes() {
     return mensajes.filter((mensaje) => {
       if (filtro !== 'todos' && estadoDe(mensaje) !== filtro) return false;
       if (!termino) return true;
-      return [mensaje.name, mensaje.email, mensaje.company, mensaje.message]
+      return [mensaje.name, mensaje.email, mensaje.company, mensaje.service, mensaje.message]
         .filter(Boolean)
         .some((campo) => String(campo).toLowerCase().includes(termino));
     });
@@ -204,7 +205,10 @@ export default function AdminMensajes() {
                           <span className="text-sm text-gray-500">· {mensaje.company}</span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-600 mt-1">{mensaje.email || '—'}</p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        {mensaje.email || '—'}
+                        {mensaje.service ? ` · ${mensaje.service}` : ''}
+                      </p>
                       {!expandido && (
                         <p className="text-sm text-gray-500 mt-2 line-clamp-2">
                           {mensaje.message || '(sin mensaje)'}
@@ -218,6 +222,28 @@ export default function AdminMensajes() {
 
                   {expandido && (
                     <div className="px-4 sm:px-6 pb-6 -mt-1">
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 mb-3">
+                        <span>
+                          <span className="font-medium text-gray-700">Correo:</span>{' '}
+                          {mensaje.email || '—'}
+                        </span>
+                        {mensaje.company && (
+                          <span>
+                            <span className="font-medium text-gray-700">Empresa:</span>{' '}
+                            {mensaje.company}
+                          </span>
+                        )}
+                        {mensaje.service && (
+                          <span>
+                            <span className="font-medium text-gray-700">Servicio de interés:</span>{' '}
+                            {mensaje.service}
+                          </span>
+                        )}
+                        <span>
+                          <span className="font-medium text-gray-700">Recibido:</span>{' '}
+                          {fechaDe(mensaje)}
+                        </span>
+                      </div>
                       <div className="bg-gray-50 border border-gray-100 rounded-lg p-4 whitespace-pre-wrap text-gray-700 text-sm">
                         {mensaje.message || '(sin mensaje)'}
                       </div>

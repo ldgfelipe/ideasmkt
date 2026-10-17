@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { db } from '../lib/firebase';
 import { collection, addDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { SERVICES } from '../lib/constants';
 
 interface FormStatus {
   submitting: boolean;
@@ -13,6 +14,7 @@ export default function ContactForm() {
     name: '',
     email: '',
     company: '',
+    service: '',
     message: ''
   });
   const [status, setStatus] = useState<FormStatus>({
@@ -21,7 +23,9 @@ export default function ContactForm() {
     error: null
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -35,6 +39,7 @@ export default function ContactForm() {
         name: formData.name.trim(),
         email: formData.email.trim(),
         company: formData.company.trim(),
+        service: formData.service,
         message: formData.message.trim(),
         // Distingue los mensajes del formulario general de los leads de campañas.
         source: 'contacto',
@@ -42,10 +47,14 @@ export default function ContactForm() {
         createdAt: serverTimestamp() as Timestamp
       });
       setStatus({ submitting: false, success: true, error: null });
-      setFormData({ name: '', email: '', company: '', message: '' });
+      setFormData({ name: '', email: '', company: '', service: '', message: '' });
     } catch (err) {
       console.error('Error saving lead:', err);
-      setStatus({ submitting: false, success: false, error: 'Hubo un error al enviar el formulario. Inténtalo de nuevo.' });
+      setStatus({
+        submitting: false,
+        success: false,
+        error: 'Hubo un error al enviar el formulario. Inténtalo de nuevo.'
+      });
     }
   };
 
@@ -105,19 +114,42 @@ export default function ContactForm() {
         </div>
       </div>
 
-      <div>
-        <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-1">
-          Empresa
-        </label>
-        <input
-          type="text"
-          id="company"
-          name="company"
-          value={formData.company}
-          onChange={handleChange}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
-          placeholder="Nombre de tu empresa"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-1">
+            Empresa
+          </label>
+          <input
+            type="text"
+            id="company"
+            name="company"
+            value={formData.company}
+            onChange={handleChange}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
+            placeholder="Nombre de tu empresa"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="service" className="block text-sm font-medium text-gray-700 mb-1">
+            Servicio de interés
+          </label>
+          <select
+            id="service"
+            name="service"
+            value={formData.service}
+            onChange={handleChange}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors bg-white"
+          >
+            <option value="">Selecciona un servicio (opcional)</option>
+            {SERVICES.map((service) => (
+              <option key={service.id} value={service.title}>
+                {service.title}
+              </option>
+            ))}
+            <option value="Otro / aún no lo sé">Otro / aún no lo sé</option>
+          </select>
+        </div>
       </div>
 
       <div>
